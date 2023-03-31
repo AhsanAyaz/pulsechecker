@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: kiwi
+      POSTGRES_USER: _username_
+      POSTGRES_PASSWORD: _password_
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
