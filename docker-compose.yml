@@ -2,17 +2,63 @@ version: "3"
 
 services:
   db:
+    container_name: pg-db
     image: postgres
     restart: always
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
       POSTGRES_DB: kiwi
       POSTGRES_USER: _username_
       POSTGRES_PASSWORD: _password_
-
+    networks:
+      - be-network
+    volumes:
+      - postgres:/var/lib/postgresql/data
+  
   adminer:
     image: adminer
     restart: always
     ports:
       - 8080:8080
+    networks:
+      - be-network
+
+  dev:
+    container_name: pc-be-dev
+    image: pc-be-dev:1.0.0
+    build:
+        context: .
+        target: development
+        dockerfile: ./Dockerfile
+    command: npm run serve:be
+    ports:
+        - 3000:3000
+        - 9229:9229
+    networks:
+        - be-network
+    volumes:
+        - .:/usr/src/app
+        - /usr/src/app/node_modules
+    restart: unless-stopped
+  prod:
+    container_name: pc-be-prod
+    image: pc-be-prod:1.0.0
+    build:
+        context: .
+        target: production
+        dockerfile: ./Dockerfile
+    command: npm run start:be:prod
+    ports:
+        - 3000:3000
+        - 9229:9229
+    networks:
+        - be-network
+    volumes:
+        - .:/usr/src/app
+        - /usr/src/app/node_modules
+    restart: unless-stopped
+networks:
+    be-network:
+volumes:
+  postgres:
