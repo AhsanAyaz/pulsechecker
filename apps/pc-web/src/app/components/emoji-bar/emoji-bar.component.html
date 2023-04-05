@@ -1,0 +1,11 @@
+<div class="flex items-center justify-center space-x-4">
+  <button
+    *ngFor="let emoji of emojis"
+    (click)="onEmojiClick(emoji)"
+    class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-purple-800 focus:outline-none focus:ring-4 focus:ring-purple-300"
+  >
+    <!-- Add emoji icon, e.g., using font-awesome -->
+    <span>{{emoji}}</span>
+  </button>
+  <!-- Add more emoji buttons as needed -->
+</div>

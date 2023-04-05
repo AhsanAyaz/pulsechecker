@@ -1,0 +1,50 @@
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-pink-500 to-red-500">
+  <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+    <div class="mb-8 text-center">
+      <h2 class="text-3xl font-bold text-purple-800 mb-2">Join Meeting</h2>
+      <p class="text-gray-600">Enter the Meeting ID to join the session</p>
+    </div>
+    <form (ngSubmit)="joinMeeting()" class="space-y-4">
+      <div class="relative">
+        <label for="meetingId" class="sr-only">Meeting ID</label>
+        <input
+          [(ngModel)]="meetingId"
+          name="meetingId"
+          type="text"
+          id="meetingId"
+          class="block w-full border border-gray-300 rounded-md px-4 py-3 focus:ring focus:border-blue-300 text-lg"
+          placeholder="Enter Meeting ID"
+          required
+        />
+        <div
+          class="absolute right-0 top-0 bottom-0 px-3 flex items-center text-gray-400 text-lg"
+        >
+          <i class="fas fa-key"></i>
+        </div>
+      </div>
+      <div class="relative">
+        <label for="attendeeName" class="sr-only">Attendee Name</label>
+        <input
+          [(ngModel)]="attendeeName"
+          name="attendeeName"
+          type="text"
+          id="attendeeName"
+          class="block w-full border border-gray-300 rounded-md px-4 py-3 focus:ring focus:border-blue-300 text-lg"
+          placeholder="Enter Your Name"
+          required
+        />
+        <div
+          class="absolute right-0 top-0 bottom-0 px-3 flex items-center text-gray-400 text-lg"
+        >
+          <i class="fas fa-key"></i>
+        </div>
+      </div>
+      <button
+        type="submit"
+        class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-md transition-colors duration-200"
+      >
+        Join
+      </button>
+    </form>
+  </div>
+</div>

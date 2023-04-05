@@ -1,0 +1,14 @@
+<div class="bg-white p-4 rounded-lg shadow-md h-64 flex flex-col items-center justify-center">
+  <h3 class="text-xl font-bold text-purple-800 mb-4">Pulse</h3>
+  <div class="flex flex-col flex-1 h-52 items-end content-end" *ngIf="total > 0; else noPulseContent">
+    <div class="flex flex-col items-center bg-red-500 w-4 transition-all duration-300" [ngStyle]="{height: redPerc + '%'}">
+    </div>
+    <div class="flex flex-col items-center bg-yellow-500 w-4 transition-all duration-300" [ngStyle]="{height: yellowPerc + '%'}">
+    </div>
+    <div class="flex flex-col items-center bg-green-500 w-4 transition-all duration-300" [ngStyle]="{height: greenPerc + '%'}">
+    </div>
+  </div>
+  <ng-template #noPulseContent>
+    No pulse available
+  </ng-template>
+</div>

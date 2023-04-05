@@ -1,0 +1,39 @@
+<div class="min-h-screen flex flex-col bg-gradient-to-br from-purple-400 via-pink-500 to-red-500">
+  <div class="m-4">
+    <h2 class="text-2xl font-bold text-white mb-2">Session Title</h2>
+  </div>
+  <div class="flex-1 relative grid grid-cols-1 mx-auto">
+    <div class="">
+      <pulsechecker-pulse-meter [pulseData]="pulseData"></pulsechecker-pulse-meter>
+    </div>
+    <div class="flex justify-center">
+      <div class="space-y-4">
+        <div class="flex space-x-4">
+          <button
+            (click)="onPaceButtonClick('red')"
+            [ngClass]="selectedPulse === 'red' ? 'ring-4 ring-red-300' : ''"
+            class="w-16 h-16 bg-red-500 rounded-full focus:outline-none focus:ring-4 focus:ring-red-300"
+          ></button>
+          <button
+            (click)="onPaceButtonClick('yellow')"
+            [ngClass]="selectedPulse === 'yellow' ? 'ring-4 ring-yellow-300' : ''"
+            class="w-16 h-16 bg-yellow-500 rounded-full focus:outline-none focus:ring-4 focus:ring-yellow-300"
+          ></button>
+          <button
+          [ngClass]="selectedPulse === 'green' ? 'ring-4 ring-green-300' : ''"
+            (click)="onPaceButtonClick('green')"
+            class="w-16 h-16 bg-green-500 rounded-full focus:outline-none focus:ring-4 focus:ring-green-300"
+          ></button>
+        </div>
+        <div class="flex justify-center space-x-2">
+          <span class="text-white">Too fast</span>
+          <span class="text-white">Moderate</span>
+          <span class="text-white">Good pace</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-white p-2">
+    <pulsechecker-emoji-bar (emojiSelected)="onEmojiSelected($event)"></pulsechecker-emoji-bar>
+  </div>
+</div>

@@ -13,6 +13,7 @@ async function bootstrap() {
   const globalPrefix = "v1";
   app.setGlobalPrefix(globalPrefix);
   app.useGlobalPipes(new ValidationPipe());
+  app.enableCors();
   const port = process.env.PORT || 3000;
   const config = new DocumentBuilder()
     .setBasePath('v1')

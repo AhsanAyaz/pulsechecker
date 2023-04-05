@@ -7,53 +7,50 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Reaction {
-  id            Int             @id @default(autoincrement())
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  type          String          @unique
-  ReactionCount ReactionCount[]
-}
-
 model Attendee {
-  id                 Int             @id @default(autoincrement())
-  displayName        String
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  sessions  Session[]       @relation("AttendeeToGame")
-  ReactionCount      ReactionCount[]
+  id          Int       @id @default(autoincrement())
+  displayName String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  sessions    Session[] @relation("AttendeeToSession")
 }
 
 model Session {
   id           Int             @id @default(autoincrement())
   pin          String          @unique
   likes        Int             @default(0)
-  userId       Int
+  userId       String
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
   name         String
   published    Boolean         @default(false)
   host         User?           @relation(fields: [userId], references: [id])
   reactions    ReactionCount[]
-  participants Attendee[]      @relation("AttendeeToGame")
+  participants Attendee[]      @relation("AttendeeToSession")
 }
 
 model ReactionCount {
   reactionType String
-  userId       Int
-  sessionId    Int 
-  count        Int @default(0)
-  user         Attendee @relation(fields: [userId], references: [id])
-  reaction     Reaction @relation(fields: [reactionType], references: [type])
-  session      Session  @relation(fields: [sessionId], references: [id])
+  sessionId    Int
+  count        Int     @default(0)
+  session      Session @relation(fields: [sessionId], references: [id])
 
-  @@id([userId, sessionId, reactionType])
+  @@id([sessionId, reactionType])
 }
 
 model User {
-  id          Int       @id @default(autoincrement())
-  displayName String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  gamesHosted Session[]
+  id           String       @id @unique()
+  displayName  String
+  email        String       @unique()
+  authProvider AuthProvider
+  providerId   String
+  avatarUrl    String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  sessions     Session[]
+}
+
+enum AuthProvider {
+  google
+  github
 }

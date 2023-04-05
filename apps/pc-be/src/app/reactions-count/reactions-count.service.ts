@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { JoinSessionDto } from '../sessions/dto/join-session.dto';
 import { CreateReactionsCountDto } from './dto/create-reactions-count.dto';
 import { UpdateReactionsCountDto } from './dto/update-reactions-count.dto';
 
@@ -7,19 +8,29 @@ import { UpdateReactionsCountDto } from './dto/update-reactions-count.dto';
 export class ReactionsCountService {
   constructor(private prisma: PrismaService) {}
 
-  create(createReactionsCountDto: CreateReactionsCountDto) {
-    const {sessionId, userId, reactionType} = createReactionsCountDto;
+  async create(createReactionsCountDto: CreateReactionsCountDto) {
+    const {sessionId, reactionType, count} = createReactionsCountDto;
+    const session = await this.prisma.reactionCount.findFirst({
+      where: {
+        sessionId,
+        reactionType
+      }
+    }) 
     return this.prisma.reactionCount.upsert({
-      where: { userId_sessionId_reactionType: {
-        userId,
+      where: { sessionId_reactionType: {
         sessionId,
         reactionType
       }},
       update: {
-        ...createReactionsCountDto
+        ...createReactionsCountDto,
+        count: (session?.count || 0) + count
       },
       create: createReactionsCountDto
     });
+  }
+
+  join(joinSessionDto: JoinSessionDto, pin: string) {
+    return Promise.resolve({success: true, joinSessionDto, pin});
   }
 
   findAll() {
@@ -27,7 +38,15 @@ export class ReactionsCountService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} reactionsCount`;
+    return this.prisma.reactionCount.findFirst();
+  }
+
+  findBySessionId(sessionId: number) {
+    return this.prisma.reactionCount.findMany({
+      where: {
+        sessionId
+      }
+    });
   }
 
   update(id: number, updateReactionsCountDto: UpdateReactionsCountDto) {

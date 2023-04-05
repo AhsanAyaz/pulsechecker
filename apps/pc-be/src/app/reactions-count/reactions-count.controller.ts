@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ReactionsCountService } from './reactions-count.service';
 import { CreateReactionsCountDto } from './dto/create-reactions-count.dto';
@@ -21,8 +22,12 @@ export class ReactionsCountController {
   }
 
   @Get()
-  findAll() {
-    return this.reactionsCountService.findAll();
+  findAll(@Query('sessionId') sessionId: string) {
+    console.log(sessionId)
+    if (!sessionId) {
+      return this.reactionsCountService.findAll();
+    }
+    return this.reactionsCountService.findBySessionId(Number(sessionId));
   }
 
   @Get(':id')
