@@ -16,7 +16,6 @@ export class LoginComponent {
 
   async signInWithGoogle(): Promise<void> {
     const {data: user} = await this.supabase.signInWithGoogle();
-    console.log(user);
     if (user) {
       this.router.navigate(['/']); // Navigate to the desired route after successful login
     }
@@ -24,7 +23,6 @@ export class LoginComponent {
 
   async signInWithGitHub(): Promise<void> {
     const {data: user} = await this.supabase.signInWithGitHub();
-    console.log(user);
     if (user) {
       this.router.navigate(['/']); // Navigate to the desired route after successful login
     }

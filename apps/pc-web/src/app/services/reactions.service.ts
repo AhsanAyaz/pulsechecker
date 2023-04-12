@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { debounceTime, delay, EMPTY, mergeMap, Observable, of, switchMap, timer } from 'rxjs';
 import { Reactions } from '../interfaces/reactions.interface';
 
 @Injectable({
@@ -19,6 +19,6 @@ export class ReactionsService {
       sessionId,
       reactionType,
       count
-    });
+    })
   }
 }

@@ -9,22 +9,22 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./pulse-meter.component.scss'],
 })
 export class PulseMeterComponent {
-  @Input() pulseData!: { red: number; yellow: number; green: number };
+  @Input() pulseData!: { fast: number; moderate: number; good: number };
 
   get total() {
-    const { red, yellow, green } = this.pulseData;
-    return red + yellow + green;
+    const { fast, moderate, good } = this.pulseData;
+    return fast + moderate + good;
   }
-  get redPerc() {
-    const { red } = this.pulseData;
-    return (red / this.total) * 100;
+  get fastPerc() {
+    const { fast } = this.pulseData;
+    return (fast / this.total) * 100;
   }
-  get yellowPerc() {
-    const { yellow } = this.pulseData;
-    return (yellow / this.total) * 100;
+  get moderatePerc() {
+    const { moderate } = this.pulseData;
+    return (moderate / this.total) * 100;
   }
-  get greenPerc() {
-    const { green } = this.pulseData;
-    return (green / this.total) * 100;
+  get goodPerc() {
+    const { good } = this.pulseData;
+    return (good / this.total) * 100;
   }
 }

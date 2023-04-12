@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { ReactionsCountModule } from './reactions-count/reactions-count.module';
 import { AttendeeModule } from './attendee/attendee.module';
 import { SessionsModule } from './sessions/session.module';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { SessionsModule } from './sessions/session.module';
     ReactionsCountModule,
     AttendeeModule,
     SessionsModule,
+    FeedbackModule,
   ],
   controllers: [AppController],
   providers: [AppService],

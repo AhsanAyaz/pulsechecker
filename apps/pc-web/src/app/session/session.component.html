@@ -1,39 +1,49 @@
 <div class="min-h-screen flex flex-col bg-gradient-to-br from-purple-400 via-pink-500 to-red-500">
   <div class="m-4">
-    <h2 class="text-2xl font-bold text-white mb-2">Session Title</h2>
+    <h2 class="text-2xl font-bold text-white mb-2">{{session?.name}}</h2>
   </div>
   <div class="flex-1 relative grid grid-cols-1 mx-auto">
     <div class="">
       <pulsechecker-pulse-meter [pulseData]="pulseData"></pulsechecker-pulse-meter>
     </div>
     <div class="flex justify-center">
-      <div class="space-y-4">
-        <div class="flex space-x-4">
-          <button
-            (click)="onPaceButtonClick('red')"
-            [ngClass]="selectedPulse === 'red' ? 'ring-4 ring-red-300' : ''"
-            class="w-16 h-16 bg-red-500 rounded-full focus:outline-none focus:ring-4 focus:ring-red-300"
-          ></button>
-          <button
-            (click)="onPaceButtonClick('yellow')"
-            [ngClass]="selectedPulse === 'yellow' ? 'ring-4 ring-yellow-300' : ''"
-            class="w-16 h-16 bg-yellow-500 rounded-full focus:outline-none focus:ring-4 focus:ring-yellow-300"
-          ></button>
-          <button
-          [ngClass]="selectedPulse === 'green' ? 'ring-4 ring-green-300' : ''"
-            (click)="onPaceButtonClick('green')"
-            class="w-16 h-16 bg-green-500 rounded-full focus:outline-none focus:ring-4 focus:ring-green-300"
-          ></button>
-        </div>
-        <div class="flex justify-center space-x-2">
-          <span class="text-white">Too fast</span>
-          <span class="text-white">Moderate</span>
-          <span class="text-white">Good pace</span>
-        </div>
+      <div class="space-y-4 mt-4">
+        <form [formGroup]="pulseForm" class="grid grid-cols-3 grid-rows-2 grid-flow-col gap-x-4 gap-y-2 justify-center">
+          <input
+            type="radio"
+            id="fastPace"
+            name="pulse"
+            formControlName="pulse"
+            value="fast"
+            [ngClass]="pulseForm.controls.pulse.value === 'fast' ? 'ring-4 ring-red-300' : ''"
+            class="w-16 h-16 cursor-pointer hover:opacity-70 transition-all duration-300 appearance-none bg-red-500 rounded-full focus:outline-none focus:ring-4 focus:ring-red-300"
+          >
+          <label for="fastPace" class="text-white h-max cursor-pointer">Too fast</label>
+          <input
+            type="radio"
+            id="mediumPace"
+            name="pulse"
+            formControlName="pulse"
+            value="moderate"
+            [ngClass]="pulseForm.controls.pulse.value === 'moderate' ? 'ring-4 ring-yellow-300' : ''"
+            class="w-16 h-16 cursor-pointer hover:opacity-70 transition-all duration-300 appearance-none bg-yellow-500 rounded-full focus:outline-none focus:ring-4 focus:ring-yellow-300"
+          >
+          <label for="mediumPace" class="text-white h-max cursor-pointer">Moderate</label>
+          <input
+            type="radio"
+            id="goodPace"
+            name="pulse"  
+            formControlName="pulse"
+            value="good"
+            [ngClass]="pulseForm.controls.pulse.value === 'good' ? 'ring-4 ring-green-300' : ''"
+            class="w-16 h-16 cursor-pointer hover:opacity-70 transition-all duration-300 appearance-none bg-green-500 rounded-full focus:outline-none focus:ring-4 focus:ring-green-300"
+          >
+          <label for="goodPace" class="text-white h-max cursor-pointer">Good pace</label>
+        </form>
       </div>
     </div>
   </div>
   <div class="bg-white p-2">
-    <pulsechecker-emoji-bar (emojiSelected)="onEmojiSelected($event)"></pulsechecker-emoji-bar>
+    <pulsechecker-emoji-bar (emojiSelected)="onEmojiTapped($event)"></pulsechecker-emoji-bar>
   </div>
 </div>

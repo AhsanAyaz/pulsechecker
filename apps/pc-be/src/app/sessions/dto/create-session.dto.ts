@@ -5,8 +5,5 @@ export class CreateSessionDto {
   name: string;
   
   @IsNotEmpty()
-  pin: string;
-  
-  @IsNotEmpty()
   userId: string;
 }

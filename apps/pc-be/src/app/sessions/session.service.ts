@@ -1,8 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { nanoid } from 'nanoid';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
+import { JoinSessionDto } from './dto/join-session.dto';
 
 @Injectable()
 export class SessionsService {
@@ -10,7 +12,10 @@ export class SessionsService {
   async create(createSessionDto: CreateSessionDto) {
     try {
       return await this.prisma.session.create({
-        data: createSessionDto
+        data: {
+          ...createSessionDto,
+          pin: nanoid(6)
+        }
       })
     } catch (e) {
       console.log({e})
@@ -28,8 +33,20 @@ export class SessionsService {
     };
   }
 
-  findAll() {
-    return this.prisma.session.findMany({});
+  getUserSessions(userId: string) {
+    return this.prisma.session.findMany({
+      where: {
+        userId
+      }
+    });
+  }
+
+  deleteUserSession(sessionId: number) {
+    return this.prisma.session.delete({
+      where: {
+        id: sessionId
+      }
+    });
   }
 
   async findOne(id: number) {
@@ -40,6 +57,50 @@ export class SessionsService {
       throw new HttpException('Session not found', HttpStatus.NOT_FOUND);
     }
     return session;
+  }
+
+  async findByPin(pin: string) {
+    const session = await this.prisma.session.findFirst({where: {
+      pin
+    }});
+    if (!session) {
+      throw new HttpException('Session not found', HttpStatus.NOT_FOUND);
+    }
+    return session;
+  }
+
+  async joinSession(pin: string, joinSessionDto: JoinSessionDto) {
+    const session = await this.prisma.session.findFirst({
+      where: {pin}
+    })
+    if (!session) {
+      throw new HttpException('Session not found', HttpStatus.NOT_FOUND)
+    }
+    const attendee = await this.prisma.attendee.upsert({
+      where: {
+        id: joinSessionDto.attendee.id || -1
+      },
+      update: {
+        displayName: joinSessionDto.attendee.displayName,
+        sessions: {
+          connect: {
+            id: session.id
+          }
+        }
+      },
+      create: {
+        displayName: joinSessionDto.attendee.displayName,
+        sessions: {
+          connect: {
+            id: session.id
+          }
+        }
+      }
+    })
+    
+    return {
+      attendee
+    }
   }
 
   update(id: number, updateSessionDto: UpdateSessionDto) {

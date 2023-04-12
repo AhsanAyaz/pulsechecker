@@ -25,7 +25,7 @@ export const appRoutes: Route[] = [{
     path: '',
     loadComponent: () => import('./dashboard/sessions-list/sessions-list.component').then(m => m.SessionsListComponent)
   }, {
-    path: 'create',
+    path: 'create-session',
     loadComponent: () => import('./dashboard/session-create/session-create.component').then(m => m.SessionCreateComponent)
   }, {
     path: ':id',

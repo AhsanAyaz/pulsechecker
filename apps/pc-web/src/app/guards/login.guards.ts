@@ -8,11 +8,11 @@ export const canActivateLogin: CanActivateFn =
       const router = inject(Router);
       const {data } =  await supabase.client.auth.getUser();
       const { user } = data;
-      console.log({user});
       if (!user) {
         router.navigate(['/login'])
         return false;
       }
+      supabase.user = user;
       return true;
     };
 

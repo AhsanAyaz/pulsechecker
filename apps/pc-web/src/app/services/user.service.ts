@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { User } from '@supabase/supabase-js';
 import { map, mergeMap, Observable, of } from 'rxjs';
-import { User as PulseUser } from '@prisma/client';
+import { User as PulseUser, Attendee } from '@prisma/client';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ import { User as PulseUser } from '@prisma/client';
 export class UserService {
   private apiUrl = 'http://localhost:3000/v1';
   http = inject(HttpClient);
-  
+  user!: PulseUser;
   getOrCreateIfNecessary(user: User): Observable<PulseUser> {
     const metadata = user.user_metadata;
     return this.http.get<{user: PulseUser}>(`${this.apiUrl}/users/${user.id}`)
@@ -28,7 +28,20 @@ export class UserService {
           providerId: metadata['provider_id']
         })
       }),
-      map(resp => resp.user)
+      map(resp => {
+        this.user = resp.user;
+        return this.user;
+      })
     ); 
+  }
+
+  getAttendeeFromStorage(): Attendee | null {
+    const attendeeStr = localStorage.getItem('pc-attendee');
+    const attendee = attendeeStr ? JSON.parse(attendeeStr) : null;
+    return attendee
+  }
+
+  saveAttendeeToStorage(attendee: Attendee) {
+    localStorage.setItem('pc-attendee', JSON.stringify(attendee));
   }
 }

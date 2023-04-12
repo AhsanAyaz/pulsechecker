@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { SupabaseService } from '../../services/supabase.service';
@@ -11,7 +11,7 @@ import { UserService } from '../../services/user.service';
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss'],
 })
-export class LayoutComponent {
+export class LayoutComponent implements OnInit {
   supabase = inject(SupabaseService)
   router = inject(Router);
   userService = inject(UserService);
@@ -31,6 +31,7 @@ export class LayoutComponent {
 
   async logOut() {
     await this.supabase.client.auth.signOut();
+    this.supabase.user = null;
     this.router.navigate(['/login'])
   }
 }

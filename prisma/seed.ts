@@ -4,25 +4,23 @@ const prisma = new PrismaClient();
 
 async function main() {
 
-  const user = await prisma.user.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
-      displayName: 'Ahsan Ayaz',
-    },
-  });
+  // const user = await prisma.user.upsert({
+  //   where: { id: 1 },
+  //   update: {},
+  //   create: {
+  //     displayName: 'Ahsan Ayaz',
+  //   },
+  // });
 
-  const game1 = await prisma.session.upsert({
-    where: { pin: 'Basic Game' },
-    update: {},
-    create: {
-      name: 'Basic Game',
-      pin: '123',
-      userId: 1
-    },
-  });
-
-  console.log({ game1 });
+  // const game1 = await prisma.session.upsert({
+  //   where: { pin: 'Basic Game' },
+  //   update: {},
+  //   create: {
+  //     name: 'Basic Game',
+  //     pin: '123',
+  //     userId: 1
+  //   },
+  // });
 }
 
 // execute the main function

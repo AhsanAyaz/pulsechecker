@@ -23,7 +23,6 @@ export class ReactionsCountController {
 
   @Get()
   findAll(@Query('sessionId') sessionId: string) {
-    console.log(sessionId)
     if (!sessionId) {
       return this.reactionsCountService.findAll();
     }

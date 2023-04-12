@@ -1,1 +1,22 @@
-<p>session-create works!</p>
+<div class="min-h-screen p-6 bg-gray-100">
+  <h2 class="text-2xl font-bold text-gray-700 mb-6">Create Session</h2>
+  <form (ngSubmit)="onSubmit()" class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <div class="mb-6">
+      <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
+      <input
+      type="text"
+      id="name"
+      name="name"
+      [(ngModel)]="session.name"
+      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      required
+      />
+    </div>
+    <button
+      type="submit"
+      class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+    >
+      Create Session
+    </button>
+  </form>
+</div>

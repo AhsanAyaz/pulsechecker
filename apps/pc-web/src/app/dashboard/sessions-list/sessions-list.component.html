@@ -1,1 +1,55 @@
-<p>sessions-list works!</p>
+<div class="min-h-screen p-6 bg-gray-100">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold text-gray-700">Sessions List</h2>
+    <button routerLink="/dashboard/create-session" class="bg-indigo-600 text-white px-4 py-2 rounded-md">Create Session</button>
+  </div>
+  <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            ID
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            PIN
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Name
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Created At
+          </th>
+          <!-- <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Participants
+          </th> -->
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let session of sessions">
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            {{ session.id }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            {{ session.pin }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            {{ session.name }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            {{ session.createdAt | date: 'short' }}
+          </td>
+          <!-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            {{ session.participants.length }}
+          </td> -->
+          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex gap-4">
+            <button class="text-indigo-600 hover:text-indigo-900">Edit</button>
+            <button class="text-red-600 hover:text-red-900" (click)="deleteSession(session)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
