@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { SessionsService } from './session.service';
 import { ReactionsCountService } from '../reactions-count/reactions-count.service';
@@ -30,8 +31,8 @@ export class SessionsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.sessionService.findOne(Number(id));
+  findOne(@Param('id') id: string, @Query('withFeedback') withFeedback: boolean) {
+    return this.sessionService.findOne(Number(id), withFeedback);
   }
   
   @Get('by-pin/:pin')
@@ -48,8 +49,13 @@ export class SessionsController {
   }
 
   @Get(':id/feedback/:attendeeId')
-  getSessionFeedback(@Param('id') id: string, @Param('attendeeId') attendeeId: string) {
+  getSessionFeedbackByAttendee(@Param('id') id: string, @Param('attendeeId') attendeeId: string) {
     return this.feedbackService.findOne(Number(id), Number(attendeeId));
+  }
+
+  @Get(':id/feedback')
+  getSessionFeedbacks(@Param('id') id: string) {
+    return this.feedbackService.findAll(Number(id));
   }
 
   @Post(':id/feedback')

@@ -40,4 +40,18 @@ export class JoinSessionComponent implements OnInit {
       }
     });
   }
+
+  async signInWithGoogle(): Promise<void> {
+    const {data: user} = await this.supabase.signInWithGoogle();
+    if (user) {
+      this.router.navigate(['/']); // Navigate to the desired route after successful login
+    }
+  }
+
+  async signInWithGitHub(): Promise<void> {
+    const {data: user} = await this.supabase.signInWithGitHub();
+    if (user) {
+      this.router.navigate(['/']); // Navigate to the desired route after successful login
+    }
+  }
 }

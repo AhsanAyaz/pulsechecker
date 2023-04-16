@@ -1,1 +1,55 @@
-<p>session-details works!</p>
+<div class="p-4">
+  <h2 class="text-2xl font-bold mb-4">Session Details</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="bg-white shadow-md rounded">
+      <h3 class="text-xl font-bold mb-2 p-4">Pulse</h3>
+      <ngx-charts-pie-chart
+        class="h-full min-h-max"
+        [view]="[350, 250]"
+        [customColors]="customColors"
+        [results]="feedbacksCountsArr"
+        [legendPosition]="legendPosition"
+        [labels]="true"
+      >
+      </ngx-charts-pie-chart>
+    </div>
+    
+    <div class="bg-white shadow-md rounded p-4">
+      <h3 class="text-xl font-bold mb-2">Reactions</h3>
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead>
+          <tr>
+            <th class="px-4 py-2 text-left text-gray-600">Emoji</th>
+            <th class="px-4 py-2 text-left text-gray-600">Count</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr *ngFor="let reaction of reactions">
+            <td class="px-4 py-2 text-2xl">{{reaction.reactionType}}</td>
+            <td class="px-4 py-2">{{ reaction.count }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    
+    <div class="bg-white shadow-md rounded p-4">
+      <h3 class="text-xl font-bold mb-2">Feedbacks</h3>
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead>
+          <tr>
+            <th class="px-4 py-2 text-left text-gray-600">Attendee</th>
+            <th class="px-4 py-2 text-left text-gray-600">Pace</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr *ngFor="let fb of session?.Feedback">
+            <td class="px-4 py-2 text-xl">{{fb.attendee.displayName}}</td>
+            <td class="px-4 py-2">{{ fb.pace }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

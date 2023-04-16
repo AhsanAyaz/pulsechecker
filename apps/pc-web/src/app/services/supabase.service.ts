@@ -8,7 +8,13 @@ export class SupabaseService {
   client: SupabaseClient;
   user!: User | null;
   constructor() { 
-    this.client = createClient("https://gflvvytymdmrbjpmymhb.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmbHZ2eXR5bWRtcmJqcG15bWhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODAyNTIwMjIsImV4cCI6MTk5NTgyODAyMn0.1m-3IhFB-87AKk_-UIPzB0O1URgBwl78oKu8sNe8aFU");
+    this.client = createClient("https://gflvvytymdmrbjpmymhb.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmbHZ2eXR5bWRtcmJqcG15bWhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODAyNTIwMjIsImV4cCI6MTk5NTgyODAyMn0.1m-3IhFB-87AKk_-UIPzB0O1URgBwl78oKu8sNe8aFU", {
+      realtime: {
+        params: {
+          eventsPerSecond: 10,
+        },
+      },
+    });
   }
 
 

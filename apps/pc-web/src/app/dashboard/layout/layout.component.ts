@@ -32,6 +32,6 @@ export class LayoutComponent implements OnInit {
   async logOut() {
     await this.supabase.client.auth.signOut();
     this.supabase.user = null;
-    this.router.navigate(['/login'])
+    this.router.navigate(['/join'])
   }
 }

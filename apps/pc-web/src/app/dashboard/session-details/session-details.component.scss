@@ -1,0 +1,17 @@
+::ng-deep {
+  ngx-charts-pie-chart {
+    padding-bottom: 16px;
+  }
+  .chart-legend {
+    display: block !important;
+    margin-left: 6px;
+    .legend-wrap {
+      .legend-labels {
+        margin-bottom: 16px;
+      }
+    }
+  }
+  .ngx-charts-outer {
+    margin: 0 auto;
+  }
+}

@@ -9,7 +9,7 @@ export const canActivateLogin: CanActivateFn =
       const {data } =  await supabase.client.auth.getUser();
       const { user } = data;
       if (!user) {
-        router.navigate(['/login'])
+        router.navigate(['/join'])
         return false;
       }
       supabase.user = user;

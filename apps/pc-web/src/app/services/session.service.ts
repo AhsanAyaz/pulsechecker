@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Attendee, Session } from '@prisma/client';
 import { Observable } from 'rxjs';
+import { SessionWithFeedback } from '../interfaces/session.interface';
 
 type JoinSessionResult = {
   session: Session,
@@ -19,8 +20,12 @@ export class SessionService {
     return this.http.post<JoinSessionResult>(`${this.apiUrl}/sessions/${meetingId}/join`, {attendee});
   }
 
-  getSession(meetingId: string): Observable<Session> {
-    return this.http.get<Session>(`${this.apiUrl}/sessions/${meetingId}`);
+  getSession(meetingId: string, withFeedback = false): Observable<Session | SessionWithFeedback> {
+    let url = `${this.apiUrl}/sessions/${meetingId}`;
+    if (withFeedback) {
+      url += '?withFeedback=true';
+    }
+    return this.http.get<Session>(url);
   }
 
   getSessionByPin(pin: string): Observable<Session> {

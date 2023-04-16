@@ -23,8 +23,16 @@ export class FeedbackService {
     });
   }
 
-  findAll() {
-    return `This action returns all feedback`;
+  findAll(sessionId: number) {
+    return this.prisma.feedback.groupBy({
+      by: ['pace'],
+      where: {
+        sessionId
+      },
+      _count: {
+        pace: true
+      }
+    });
   }
 
   findOne(sessionId: number, attendeeId: number) {

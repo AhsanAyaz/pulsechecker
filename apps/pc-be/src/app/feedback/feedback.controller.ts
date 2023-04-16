@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
   Patch,
@@ -18,11 +17,6 @@ export class FeedbackController {
   @Post()
   create(@Body() createFeedbackDto: CreateFeedbackDto) {
     return this.feedbackService.create(createFeedbackDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.feedbackService.findAll();
   }
 
   @Patch(':id')

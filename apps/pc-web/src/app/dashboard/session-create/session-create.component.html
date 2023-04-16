@@ -12,6 +12,16 @@
       required
       />
     </div>
+    <label class="mb-6 flex gap-4 items-center">
+      <input
+      type="checkbox"
+      id="realtime"
+      name="realtime"
+      [(ngModel)]="session.showRealtimePulse"
+      required
+      />
+      <span for="realtime" class="block text-gray-700 text-sm font-bold">Show Realtime Pulse</span>
+    </label>
     <button
       type="submit"
       class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"

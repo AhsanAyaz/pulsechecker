@@ -2,7 +2,6 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SessionService } from '../../services/session.service';
 import { UserService } from '../../services/user.service';
-import { map, mergeMap, Observable, of } from 'rxjs';
 import { Session } from '@prisma/client';
 import { SupabaseService } from '../../services/supabase.service';
 import { RouterModule } from '@angular/router';
@@ -27,12 +26,13 @@ export class SessionsListComponent implements OnInit {
     const {
       data: { user },
     } = await this.supabase.client.auth.getUser();
-    this.sessionService.getUserSessions(user!.id).subscribe((sessions) => {
+    if (!user) {
+      return;
+    }
+    this.sessionService.getUserSessions(user.id).subscribe((sessions) => {
       this.sessions = sessions;
     });
   }
-
-  createSession() {}
 
   deleteSession(session: Session) {
     const confirmDelete = confirm(

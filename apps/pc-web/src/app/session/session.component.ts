@@ -3,23 +3,25 @@ import { CommonModule } from '@angular/common';
 import { PulseMeterComponent } from '../components/pulse-meter/pulse-meter.component';
 import { EmojiBarComponent } from '../components/emoji-bar/emoji-bar.component';
 import { SessionService } from '../services/session.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import {
   BehaviorSubject,
   catchError,
   debounceTime,
   filter,
+  forkJoin,
   mergeMap,
   takeWhile,
 } from 'rxjs';
 import { ReactionsService } from '../services/reactions.service';
 import { Reactions } from '../interfaces/reactions.interface';
-import { Attendee, Feedback, Session } from '@prisma/client';
+import { Attendee, Feedback, Pace, Session } from '@prisma/client';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FeedbackService } from '../services/feedback.service';
 import { UserService } from '../services/user.service';
-
-type PulseType = 'fast' | 'moderate' | 'good';
+import { SupabaseService } from '../services/supabase.service';
+import { RealtimeChannel } from '@supabase/supabase-js';
+import { SessionFeedbackWithCount } from '../interfaces/session-feedback.interface';
 
 @Component({
   selector: 'pulsechecker-session',
@@ -29,17 +31,19 @@ type PulseType = 'fast' | 'moderate' | 'good';
     PulseMeterComponent,
     EmojiBarComponent,
     ReactiveFormsModule,
+    RouterModule
   ],
   templateUrl: './session.component.html',
   styleUrls: ['./session.component.scss'],
 })
 export class SessionComponent implements OnInit, OnDestroy {
-  colors: PulseType[] = ['fast', 'moderate', 'good'];
-  pulseData: Record<PulseType, number> = { fast: 1, moderate: 1, good: 1 };
-  selectedPulse: PulseType | null = null;
+  colors: Pace[] = ['fast', 'moderate', 'good'];
+  feedbacks: SessionFeedbackWithCount = { fast: 0, moderate: 0, good: 0 };
+  selectedPulse: Pace | null = null;
   sessionService = inject(SessionService);
   reactionsService = inject(ReactionsService);
   feedbackService = inject(FeedbackService);
+  supabase = inject(SupabaseService);
   userService = inject(UserService);
   route = inject(ActivatedRoute);
   router = inject(Router);
@@ -51,10 +55,12 @@ export class SessionComponent implements OnInit, OnDestroy {
       count: 0,
     });
   pulseForm = new FormGroup({
-    pulse: new FormControl<PulseType | null>(null, { nonNullable: true }),
+    pulse: new FormControl<Pace | null>(null, { nonNullable: true }),
   });
   componentAlive = true;
   attendee!: Attendee | null;
+  realtimeChannel!: RealtimeChannel;
+  isLoadingData = false;
 
   ngOnInit(): void {
     this.componentAlive = true;
@@ -64,32 +70,43 @@ export class SessionComponent implements OnInit, OnDestroy {
       this.router.navigate(['/']);
       return;
     }
+    this.isLoadingData = true;
     this.sessionService
       .getSessionByPin(pin)
       .pipe(
         mergeMap((session: Session) => {
           this.session = session;
-          return this.getFeedback(this.attendee as Attendee);
+          return forkJoin([
+            this.feedbackService.getAttendeeFeedback(this.session.id, (this.attendee as Attendee).id),
+            this.feedbackService.getSessionFeedbackCounts(this.session.id)
+          ]);
         }),
         catchError(({ error }) => {
           console.error(error);
           if (error.statusCode === 404) {
             this.router.navigate(['/404']);
           }
+          this.isLoadingData = false;
           throw error;
         })
       )
-      .subscribe((feedback: Feedback) => {
-        if (feedback) {
-          this.pulseForm.controls.pulse.setValue(feedback.pace);
-          this.pulseData[feedback.pace]++;
-          this.selectedPulse = feedback.pace;
+      .subscribe(([attendeeFeedback, feedbacks]: [Feedback, SessionFeedbackWithCount]) => {
+        console.log({feedbacks})
+        this.feedbacks = {
+          ...this.feedbacks,
+          ...feedbacks
+        };
+        if (attendeeFeedback) {
+          this.pulseForm.controls.pulse.setValue(attendeeFeedback.pace);
+          this.selectedPulse = attendeeFeedback.pace;
         }
         this.initHandlers()
+        this.isLoadingData = false;
       });
   }
 
   initHandlers() {
+    console.log('init handlers')
     this.emojiTap
       .pipe(
         debounceTime(500),
@@ -112,21 +129,43 @@ export class SessionComponent implements OnInit, OnDestroy {
         }
         this.onPaceButtonClick(val.pulse);
       });
+
+    this.realtimeChannel = this.supabase.client.channel(`session_${this.session.id}`);
+    this.realtimeChannel
+    .on('broadcast', { event: 'pulse-added' }, (payload) => {
+      console.log('added', payload)
+      const { pace } = payload;
+      this.feedbacks[pace as Pace]++;
+    })
+    .on('broadcast', { event: 'pulse-updated' }, (payload) => {
+      console.log('updated', payload)
+      const { pace, paceFrom } = payload;
+      this.feedbacks[pace as Pace]++;
+      this.feedbacks[paceFrom as Pace]--;
+      console.log(this.feedbacks)
+    })
+    .subscribe((status) => {
+      if (status === 'SUBSCRIBED') {
+        console.log('YEAH!');
+      }
+    })
   }
 
   ngOnDestroy(): void {
     this.componentAlive = false;
   }
 
-  onPaceButtonClick(color: PulseType): void {
+  onPaceButtonClick(color: Pace): void {
+    let updateFrom: Pace | null = null;
     if (this.selectedPulse !== null && this.selectedPulse !== color) {
-      this.pulseData[this.selectedPulse]--;
+      updateFrom = this.selectedPulse;
+      this.feedbacks[this.selectedPulse]--;
     } else if (this.selectedPulse === color) {
       return;
     }
     this.selectedPulse = color;
-    this.pulseData[color]++;
-    this.saveFeedback(this.selectedPulse);
+    this.feedbacks[color]++;
+    this.saveFeedback(this.selectedPulse, updateFrom);
   }
 
   onEmojiTapped(emoji: string): void {
@@ -145,7 +184,7 @@ export class SessionComponent implements OnInit, OnDestroy {
       });
   }
 
-  saveFeedback(pulse: PulseType) {
+  saveFeedback(pulse: Pace, updateFrom: Pace | null) {
     if (!this.attendee) {
       return;
     }
@@ -153,10 +192,16 @@ export class SessionComponent implements OnInit, OnDestroy {
       .saveFeedback(this.session.id, pulse as string, this.attendee.id)
       .subscribe((result) => {
         console.log({ result });
+        this.realtimeChannel
+        .send({
+          type: 'broadcast',
+          event: updateFrom !== null ? 'pulse-updated' : 'pulse-added',
+          pace: result.pace,
+          paceFrom: updateFrom,
+          sessionId: this.session.id,
+          attendeeId: this.attendee?.id,
+          attendee: this.attendee
+        })
       });
-  }
-
-  getFeedback(attendee: Attendee) {
-    return this.feedbackService.getFeedback(this.session.id, attendee.id);
   }
 }

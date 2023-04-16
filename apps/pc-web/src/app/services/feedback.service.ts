@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
-import { Feedback } from '@prisma/client';
+import { Feedback, Pace } from '@prisma/client';
+import { SessionFeedbackWithCount } from '../interfaces/session-feedback.interface';
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +11,6 @@ import { Feedback } from '@prisma/client';
 export class FeedbackService {
   private apiUrl = 'http://localhost:3000/v1';
   http = inject(HttpClient);
-
 
   saveFeedback(sessionId: number, pace: string, attendeeId: number): Observable<Feedback> {
     return this.http.post<Feedback>(`${this.apiUrl}/sessions/${sessionId}/feedback`, {
@@ -21,7 +22,25 @@ export class FeedbackService {
     })
   }
 
-  getFeedback(sessionId: number, attendeeId: number): Observable<Feedback> {
+  getAttendeeFeedback(sessionId: number, attendeeId: number): Observable<Feedback> {
     return this.http.get<Feedback>(`${this.apiUrl}/sessions/${sessionId}/feedback/${attendeeId}`)
+  }
+
+  getSessionFeedbackCounts(sessionId: number): Observable<SessionFeedbackWithCount> {
+    return this.http.get<{
+      "_count": {
+        "pace": number
+      },
+      "pace": Pace
+    }[]>(`${this.apiUrl}/sessions/${sessionId}/feedback`).pipe(
+      map(resp => {
+        return resp.reduce((acc, next) => {
+          return {
+            ...acc,
+            [next.pace]: next._count.pace
+          }
+        }, {} as SessionFeedbackWithCount)
+      })
+    )
   }
 }

@@ -19,33 +19,34 @@ model Attendee {
 model Feedback {
   pace       Pace
   sessionId  Int
-  session    Session  @relation(fields: [sessionId], references: [id])
+  session    Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   attendeeId Int
-  attendee   Attendee @relation(fields: [attendeeId], references: [id])
+  attendee   Attendee @relation(fields: [attendeeId], references: [id], onDelete: Cascade)
 
   @@id([sessionId, attendeeId])
 }
 
 model Session {
-  id           Int             @id @default(autoincrement())
-  pin          String          @unique
-  likes        Int             @default(0)
-  userId       String
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
-  name         String
-  published    Boolean         @default(false)
-  host         User?           @relation(fields: [userId], references: [id])
-  reactions    ReactionCount[]
-  participants Attendee[]      @relation("AttendeeToSession")
-  Feedback     Feedback[]
+  id                Int             @id @default(autoincrement())
+  pin               String          @unique
+  likes             Int             @default(0)
+  userId            String
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  name              String
+  published         Boolean         @default(false)
+  host              User?           @relation(fields: [userId], references: [id])
+  reactions         ReactionCount[]
+  participants      Attendee[]      @relation("AttendeeToSession")
+  Feedback          Feedback[]
+  showRealtimePulse Boolean         @default(false)
 }
 
 model ReactionCount {
   reactionType String
   sessionId    Int
   count        Int     @default(0)
-  session      Session @relation(fields: [sessionId], references: [id])
+  session      Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
   @@id([sessionId, reactionType])
 }
