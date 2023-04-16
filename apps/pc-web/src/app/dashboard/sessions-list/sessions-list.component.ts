@@ -47,4 +47,9 @@ export class SessionsListComponent implements OnInit {
         this.sessions = this.sessions.filter((sess) => sess.id !== session.id);
       });
   }
+
+  async copyPin(pin: string) {
+    await window.navigator.clipboard.writeText(pin);
+    alert('Copied to clipboard')
+  }
 }

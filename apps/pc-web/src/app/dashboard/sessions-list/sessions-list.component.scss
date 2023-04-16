@@ -1,0 +1,5 @@
+.pin-container:hover {
+  > * {
+    @apply text-indigo-400;
+  }
+}
