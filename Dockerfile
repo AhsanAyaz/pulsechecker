@@ -1,3 +1,5 @@
+ARG DATABASE_URL
+
 FROM node:18 as development
 
 WORKDIR /app
