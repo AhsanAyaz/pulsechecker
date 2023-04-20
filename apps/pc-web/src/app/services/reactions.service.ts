@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { debounceTime, delay, EMPTY, mergeMap, Observable, of, switchMap, timer } from 'rxjs';
 import { Reactions } from '../interfaces/reactions.interface';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReactionsService {
-  private apiUrl = 'http://localhost:3000/v1';
+  private apiUrl = environment.apiBaseUrl;
   http = inject(HttpClient);
 
   getReactions(sessionId: number): Observable<Reactions[]> {

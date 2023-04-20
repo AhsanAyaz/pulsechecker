@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Attendee, Session } from '@prisma/client';
 import { Observable } from 'rxjs';
 import { SessionWithFeedback } from '../interfaces/session.interface';
+import { environment } from '../environments/environment';
 
 type JoinSessionResult = {
   session: Session,
@@ -13,7 +14,7 @@ type JoinSessionResult = {
   providedIn: 'root'
 })
 export class SessionService {
-  private apiUrl = 'http://localhost:3000/v1';
+  private apiUrl = environment.apiBaseUrl;
   http = inject(HttpClient);
 
   joinSession({meetingId, attendee}: {meetingId: string, attendee: Partial<Attendee>}): Observable<JoinSessionResult> {

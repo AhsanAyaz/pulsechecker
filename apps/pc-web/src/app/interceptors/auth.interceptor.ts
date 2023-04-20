@@ -10,9 +10,10 @@ import {
 import { from, mergeMap, Observable } from 'rxjs';
 import { SupabaseService } from '../services/supabase.service';
 import { Session } from '@supabase/supabase-js';
+import { environment } from '../environments/environment';
 
 export const AuthInterceptor: HttpInterceptorFn = (request: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>>  => {
-  const apiUrl = 'http://localhost:3000/v1';
+  const apiUrl = environment.apiBaseUrl;
   const supabase = inject(SupabaseService);
   return from(supabase.client.auth.getSession())
     .pipe(

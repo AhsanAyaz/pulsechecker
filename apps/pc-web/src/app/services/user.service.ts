@@ -3,12 +3,13 @@ import { inject, Injectable } from '@angular/core';
 import { User } from '@supabase/supabase-js';
 import { map, mergeMap, Observable, of } from 'rxjs';
 import { User as PulseUser, Attendee } from '@prisma/client';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'http://localhost:3000/v1';
+  private apiUrl = environment.apiBaseUrl;
   http = inject(HttpClient);
   user!: PulseUser;
   getOrCreateIfNecessary(user: User): Observable<PulseUser> {

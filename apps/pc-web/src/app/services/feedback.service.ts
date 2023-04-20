@@ -4,12 +4,13 @@ import { Observable } from 'rxjs/internal/Observable';
 import { Feedback, Pace } from '@prisma/client';
 import { SessionFeedbackWithCount } from '../interfaces/session-feedback.interface';
 import { map } from 'rxjs';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FeedbackService {
-  private apiUrl = 'http://localhost:3000/v1';
+  private apiUrl = environment.apiBaseUrl;
   http = inject(HttpClient);
 
   saveFeedback(sessionId: number, pace: string, attendeeId: number): Observable<Feedback> {
