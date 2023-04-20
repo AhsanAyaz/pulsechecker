@@ -8,6 +8,8 @@ COPY prisma ./prisma/
 
 
 RUN npm install
+RUN npx prisma db push
+RUN npx prisma generate
 
 COPY . .
 
@@ -25,6 +27,8 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 RUN npm install --only=production
+RUN npx prisma db push
+RUN npx prisma generate
 
 COPY --from=development /app/dist ./dist
 COPY --from=development /app/prisma ./prisma
