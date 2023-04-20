@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY package*.json ./
 COPY prisma ./prisma/
-COPY .env.docker ./prisma/.env
+# COPY .env.docker ./prisma/.env
 
 
 RUN npm install
