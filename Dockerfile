@@ -1,4 +1,4 @@
-FROM node:16 as development
+FROM node:18 as development
 
 WORKDIR /app
 
@@ -15,7 +15,7 @@ RUN npm run build:be
 
 CMD [ "node", "dist/apps/pc-be/main.js" ]
 
-FROM node:16 as production
+FROM node:18 as production
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
@@ -28,6 +28,5 @@ RUN npm install --only=production
 
 COPY --from=development /app/dist ./dist
 COPY --from=development /app/prisma ./prisma
-
 
 CMD [ "node", "dist/apps/pc-be/main.js" ]
