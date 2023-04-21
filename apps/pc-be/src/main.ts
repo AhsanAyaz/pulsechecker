@@ -13,7 +13,9 @@ async function bootstrap() {
   const globalPrefix = "v1";
   app.setGlobalPrefix(globalPrefix);
   app.useGlobalPipes(new ValidationPipe());
-  app.enableCors();
+  app.enableCors({
+    origin: ["http://localhost:4200", "https://rococo-malasada-5e9f7d.netlify.app", /\.pulse-checker\.com$/]
+  });
   const port = process.env.PORT || 3000;
   const config = new DocumentBuilder()
     .setBasePath('v1')
