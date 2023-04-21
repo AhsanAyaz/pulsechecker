@@ -13,12 +13,19 @@ async function bootstrap() {
   const globalPrefix = "v1";
   app.setGlobalPrefix(globalPrefix);
   app.useGlobalPipes(new ValidationPipe());
-  app.enableCors({
-    origin: ["http://localhost:4200", "https://rococo-malasada-5e9f7d.netlify.app", /\.pulse-checker\.com$/],
-    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-    "preflightContinue": false,
-    "optionsSuccessStatus": 204
-  });
+  const corsOptions = {
+    origin: ["http://localhost:4200", "https://pulsechecker.netlify.app", /\.pulsechecker\.com$/],
+    methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+    credentials: true,
+    allowedHeaders: [
+      'Accept',
+      'Content-Type',
+      'Authorization',
+    ]
+  }
+  app.enableCors(corsOptions);
   const port = process.env.PORT || 3000;
   const config = new DocumentBuilder()
     .setBasePath('v1')
