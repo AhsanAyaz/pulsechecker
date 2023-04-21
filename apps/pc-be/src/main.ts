@@ -14,7 +14,10 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors({
-    origin: ["http://localhost:4200", "https://rococo-malasada-5e9f7d.netlify.app", /\.pulse-checker\.com$/]
+    origin: ["http://localhost:4200", "https://rococo-malasada-5e9f7d.netlify.app", /\.pulse-checker\.com$/],
+    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+    "preflightContinue": false,
+    "optionsSuccessStatus": 204
   });
   const port = process.env.PORT || 3000;
   const config = new DocumentBuilder()
