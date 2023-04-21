@@ -1,3 +1,3 @@
 export const environment = {
-  apiBaseUrl: 'https://pulsechecker-production.up.railway.app/v1/'
+  apiBaseUrl: 'https://pulsechecker-production.up.railway.app/v1'
 }
