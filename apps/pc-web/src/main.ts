@@ -3,6 +3,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import {
   provideRouter,
   withEnabledBlockingInitialNavigation,
+  withHashLocation,
 } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { appRoutes } from './app/app.routes';
@@ -11,7 +12,7 @@ import { AuthInterceptor } from './app/interceptors/auth.interceptor';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideRouter(appRoutes, withEnabledBlockingInitialNavigation()),
+    provideRouter(appRoutes, withEnabledBlockingInitialNavigation(), withHashLocation()),
     provideHttpClient(withInterceptors([AuthInterceptor])),
     provideAnimations()
   ],
