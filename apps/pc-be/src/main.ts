@@ -9,23 +9,23 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from "./app/app.module";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      origin: ["http://localhost:4200", "https://pulsechecker.netlify.app", /\.pulsechecker\.com$/],
+      methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS',
+      preflightContinue: false,
+      optionsSuccessStatus: 204,
+      credentials: true,
+      allowedHeaders: [
+        'Accept',
+        'Content-Type',
+        'Authorization',
+      ]
+    }
+  });
   const globalPrefix = "v1";
   app.setGlobalPrefix(globalPrefix);
   app.useGlobalPipes(new ValidationPipe());
-  const corsOptions = {
-    origin: ["http://localhost:4200", "https://pulsechecker.netlify.app", /\.pulsechecker\.com$/],
-    methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS',
-    preflightContinue: true,
-    optionsSuccessStatus: 204,
-    credentials: true,
-    allowedHeaders: [
-      'Accept',
-      'Content-Type',
-      'Authorization',
-    ]
-  }
-  app.enableCors(corsOptions);
   const port = process.env.PORT || 3000;
   const config = new DocumentBuilder()
     .setBasePath('v1')

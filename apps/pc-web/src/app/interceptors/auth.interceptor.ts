@@ -23,7 +23,8 @@ export const AuthInterceptor: HttpInterceptorFn = (request: HttpRequest<unknown>
         }
         if (request.url.startsWith(`${apiUrl}/users`)) {
           const authReq = request.clone({
-            headers: request.headers.set('Authorization', session.access_token)
+            headers: request.headers.set('Authorization', session.access_token),
+            withCredentials: true
           });
           return next(authReq);
         }
