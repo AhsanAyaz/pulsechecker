@@ -12,7 +12,7 @@ import { AuthInterceptor } from './app/interceptors/auth.interceptor';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideRouter(appRoutes, withEnabledBlockingInitialNavigation(), withHashLocation()),
+    provideRouter(appRoutes, withEnabledBlockingInitialNavigation()),
     provideHttpClient(withInterceptors([AuthInterceptor])),
     provideAnimations()
   ],
