@@ -14,7 +14,7 @@ export class SessionsService {
       return await this.prisma.session.create({
         data: {
           ...createSessionDto,
-          pin: nanoid(6),
+          pin: nanoid(5),
         },
       });
     } catch (e) {
