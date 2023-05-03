@@ -50,6 +50,13 @@ export class SessionsListComponent implements OnInit {
 
   async copyPin(pin: string) {
     await window.navigator.clipboard.writeText(pin);
-    alert('Copied to clipboard')
+    alert('Pin copied to clipboard')
+  }
+  
+  async copySessionLink(session: Session) {
+    const {pin} = session;
+    const url = `${window.location.origin}/session/${pin}`
+    await window.navigator.clipboard.writeText(url);
+    alert('Session link copied to clipboard')
   }
 }

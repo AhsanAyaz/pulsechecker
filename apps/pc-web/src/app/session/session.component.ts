@@ -67,7 +67,7 @@ export class SessionComponent implements OnInit, OnDestroy {
     const pin = this.route.snapshot.paramMap.get('id');
     this.attendee = this.userService.getAttendeeFromStorage();
     if (!pin || !this.attendee) {
-      this.router.navigate(['/']);
+      this.router.navigateByUrl(`/join?session=${pin}`);
       return;
     }
     this.isLoadingData = true;

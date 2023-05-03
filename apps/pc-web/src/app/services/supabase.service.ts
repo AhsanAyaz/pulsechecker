@@ -32,6 +32,9 @@ export class SupabaseService {
   async signInWithGitHub() {
     const { data, error } = await this.client.auth.signInWithOAuth({
       provider: 'github',
+      options: {
+        scopes: 'email'
+      }
     })
     return {data, error}
   }
