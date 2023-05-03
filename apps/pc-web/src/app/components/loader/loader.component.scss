@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  --bg-color: rgb(147 51 234);
 }
 .lds-ring {
   display: inline-block;
@@ -12,10 +13,10 @@
   box-sizing: border-box;
   display: block;
   position: absolute;
-  border: 6.4px solid #333;
+  border: 6.4px solid var(--bg-color);
   border-radius: 50%;
   animation: lds-ring 1.2s cubic-bezier(.5,0,.5,1) infinite;
-  border-color: #333 transparent transparent transparent;
+  border-color: var(--bg-color) transparent transparent transparent;
 }
 
 .lds-ring div:nth-child(1) {
