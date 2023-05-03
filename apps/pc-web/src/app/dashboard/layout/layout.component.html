@@ -1,6 +1,9 @@
 <header class="h-16 px-3 py-2 flex items-center justify-between">
   <a routerLink="/">Pulse Checker</a>
-  <button (click)="logOut()">LogOut</button>
+  <span class="flex items-center gap-4">
+    <button routerLink="/join">Join</button>
+    <button (click)="logOut()">LogOut</button>
+  </span>
 </header>
 <main>
   <router-outlet></router-outlet>

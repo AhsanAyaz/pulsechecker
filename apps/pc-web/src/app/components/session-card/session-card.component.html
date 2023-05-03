@@ -1,0 +1,47 @@
+<article class="px-4">
+  <a
+    class="relative bg-white block overflow-hidden rounded-lg border border-gray-100 p-4 sm:p-6 lg:p-8"
+  >
+    <span
+      class="absolute inset-x-0 bottom-0 h-2 bg-gradient-to-r from-green-300 via-blue-500 to-purple-600"
+    ></span>
+
+    <div class="flex justify-between">
+      <h3 class="text-lg font-bold text-gray-900 sm:text-xl">
+        {{session.name}}
+      </h3>
+
+      <p class="mt-1 text-xs font-medium text-gray-600">Session ID: {{session.id}}</p>
+    </div>
+
+    <div class="mt-4">
+      <p class="max-w-[40ch] text-sm text-gray-500">
+        <!-- session description -->
+      </p>
+    </div>
+
+    <dl class="mt-6 flex flex-col gap-4 sm:gap-6">
+      <div class="flex flex-col-reverse">
+        <dt class="text-sm font-medium text-gray-600">{{ session.createdAt | date: 'short' }}</dt>
+        <dd class="text-xs text-gray-500">Created at</dd>
+      </div>
+
+      <div class="flex flex-col-reverse cursor-pointer pin-container" (click)="copyPin(session.pin)">
+        <dt class="text-sm font-medium text-gray-600">{{session.pin}}</dt>
+        <dd class="text-xs text-gray-500">Pin (click to copy)</dd>
+      </div>
+    </dl>
+
+    <div class="mt-8 mb-4 flex items-center gap-4">
+      <button routerLink="/dashboard/sessions/{{session.id}}" class="inline-block rounded border border-indigo-600 px-8 py-1.5 text-sm font-medium text-indigo-600 hover:bg-indigo-600 hover:text-white focus:outline-none focus:ring active:bg-indigo-500">
+        View
+      </button>
+      <pulsechecker-button-with-loader [isLoading]="isDeletingSession" color="red" (click)="deleteSession.emit(session)" >
+        Delete
+      </pulsechecker-button-with-loader>
+      <pulsechecker-button-with-loader (click)="copySessionLink(session)">
+        Copy URL
+      </pulsechecker-button-with-loader>
+    </div>
+  </a>
+</article>

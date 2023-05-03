@@ -22,6 +22,7 @@ export class JoinSessionComponent implements OnInit {
   supabase = inject(SupabaseService);
   route = inject(ActivatedRoute);
   attendee!: Partial<Attendee>;
+  
   ngOnInit(): void {
     this.attendee = this.userService.getAttendeeFromStorage() || {
       displayName: '',
@@ -33,35 +34,39 @@ export class JoinSessionComponent implements OnInit {
   }
 
   joinMeeting(): void {
-    this.sessionService.joinSession({
-      meetingId: this.meetingId, 
-      attendee: this.attendee
-    })
-    .subscribe((response) => {
-      if (response.attendee) {
-        this.userService.saveAttendeeToStorage(response.attendee);
-        this.router.navigate(['/session', this.meetingId]);
-      } else {
-        // Handle error or display a message
-      }
-    }, (err) => {
-      if (err.status === 404) {
-        alert('Session not found');
-        return
-      }
-      alert('Error joining the session \n');
-    });
+    this.sessionService
+      .joinSession({
+        meetingId: this.meetingId,
+        attendee: this.attendee,
+      })
+      .subscribe({
+        next: (response) => {
+          if (response.attendee) {
+            this.userService.saveAttendeeToStorage(response.attendee);
+            this.router.navigate(['/session', this.meetingId]);
+          } else {
+            // Handle error or display a message
+          }
+        },
+        error: (err) => {
+          if (err.status === 404) {
+            alert('Session not found');
+            return;
+          }
+          alert('Error joining the session \n');
+        },
+      });
   }
 
   async signInWithGoogle(): Promise<void> {
-    const {data: user} = await this.supabase.signInWithGoogle();
+    const { data: user } = await this.supabase.signInWithGoogle();
     if (user) {
       this.router.navigate(['/']); // Navigate to the desired route after successful login
     }
   }
 
   async signInWithGitHub(): Promise<void> {
-    const {data: user} = await this.supabase.signInWithGitHub();
+    const { data: user } = await this.supabase.signInWithGitHub();
     if (user) {
       this.router.navigate(['/']); // Navigate to the desired route after successful login
     }

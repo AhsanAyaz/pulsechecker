@@ -1,6 +1,6 @@
 <div class="min-h-screen p-6 bg-gray-100">
   <h2 class="text-2xl font-bold text-gray-700 mb-6">Create Session</h2>
-  <form (ngSubmit)="onSubmit()" class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+  <form *ngIf="!creatingSession; else loader" (ngSubmit)="onSubmit()" class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
     <div class="mb-6">
       <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
       <input
@@ -30,3 +30,8 @@
     </button>
   </form>
 </div>
+<ng-template #loader>
+  <div class="p-4 flex items-center justify-center">
+    <pulsechecker-loader></pulsechecker-loader>
+  </div>
+</ng-template>

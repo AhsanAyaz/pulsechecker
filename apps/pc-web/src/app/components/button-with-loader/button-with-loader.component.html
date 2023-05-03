@@ -1,0 +1,13 @@
+<button class="inline-block rounded border px-8 hover:text-white py-1.5 text-sm font-medium focus:outline-none focus:ring" [ngClass]="{
+  'border-slate-600 text-slate-600 hover:bg-slate-600 active:bg-slate-500' : color === 'black',
+  'border-red-600 text-red-600 hover:bg-red-600 active:bg-red-500' : color === 'red',
+  'border-blue-600 text-blue-600 hover:bg-blue-600 active:bg-blue-500' : color === 'blue'
+}" [disabled]="isLoading">
+  <ng-content *ngIf="!isLoading; else loader"></ng-content>
+</button>
+
+<ng-template #loader>
+  <div class="w-full h-full flex justify-center items-center">
+    <pulsechecker-loader [size]="18"></pulsechecker-loader>
+  </div>
+</ng-template>
