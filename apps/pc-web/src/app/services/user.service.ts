@@ -42,7 +42,15 @@ export class UserService {
     return attendee
   }
 
+  getAttendeeFromServer(id: number): Observable<Attendee> {
+    return this.http.get<Attendee>(`${this.apiUrl}/attendee/${id}`)
+  }
+
   saveAttendeeToStorage(attendee: Attendee) {
     localStorage.setItem('pc-attendee', JSON.stringify(attendee));
+  }
+  
+  removeAttendeeFromStorage() {
+    localStorage.removeItem('pc-attendee');
   }
 }

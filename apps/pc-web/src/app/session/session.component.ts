@@ -6,6 +6,7 @@ import { SessionService } from '../services/session.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import {
   BehaviorSubject,
+  EMPTY,
   catchError,
   debounceTime,
   filter,
@@ -73,15 +74,18 @@ export class SessionComponent implements OnInit, OnDestroy {
       return;
     }
     this.isLoadingData = true;
-    this.sessionService
-      .getSessionByPin(pin)
+
+    this.userService.getAttendeeFromServer(this.attendee.id)
       .pipe(
-        mergeMap((session: Session) => {
-          this.session = session;
-          return forkJoin([
-            this.feedbackService.getAttendeeFeedback(this.session.id, (this.attendee as Attendee).id),
-            this.feedbackService.getSessionFeedbackCounts(this.session.id)
-          ]);
+        mergeMap(attendee => {
+          if (!attendee) {
+            this.userService.removeAttendeeFromStorage();
+            this.router.navigateByUrl(`/join?session=${pin}`);
+            return EMPTY;
+          }
+          this.userService.saveAttendeeToStorage(attendee);
+          this.attendee = attendee;
+          return this.sessionService.getSessionByPin(pin);
         }),
         catchError(({ error }) => {
           console.error(error);
@@ -90,6 +94,13 @@ export class SessionComponent implements OnInit, OnDestroy {
           }
           this.isLoadingData = false;
           throw error;
+        }),
+        mergeMap((session) => {
+          this.session = session;
+          return forkJoin([
+            this.feedbackService.getAttendeeFeedback(this.session.id, (this.attendee as Attendee).id),
+            this.feedbackService.getSessionFeedbackCounts(this.session.id)
+          ]);
         })
       )
       .subscribe(([attendeeFeedback, feedbacks]: [Feedback, SessionFeedbackWithCount]) => {

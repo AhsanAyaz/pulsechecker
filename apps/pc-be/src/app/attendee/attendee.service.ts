@@ -18,10 +18,14 @@ export class AttendeeService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} attendee`;
+    return this.prisma.attendee.findFirst({
+      where: {
+        id
+      }
+    });;
   }
 
-  update(id: number, updateAttendeeDto: UpdateAttendeeDto) {
+  update(id: number) {
     return `This action updates a #${id} attendee`;
   }
 
