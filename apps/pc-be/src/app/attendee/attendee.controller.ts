@@ -30,14 +30,6 @@ export class AttendeeController {
     return this.attendeeService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateAttendeeDto: UpdateAttendeeDto
-  ) {
-    return this.attendeeService.update(+id, updateAttendeeDto);
-  }
-
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.attendeeService.remove(+id);
