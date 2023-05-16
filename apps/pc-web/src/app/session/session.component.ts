@@ -24,6 +24,7 @@ import { SupabaseService } from '../services/supabase.service';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { SessionFeedbackWithCount } from '../interfaces/session-feedback.interface';
 import { LoaderComponent } from '../components/loader/loader.component';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'pulsechecker-session',
@@ -50,6 +51,7 @@ export class SessionComponent implements OnInit, OnDestroy {
   userService = inject(UserService);
   route = inject(ActivatedRoute);
   router = inject(Router);
+  titleService = inject(Title);
   session!: Session;
   reactions!: Reactions[];
   emojiTap: BehaviorSubject<{ count: number; emoji: string }> =
@@ -97,6 +99,7 @@ export class SessionComponent implements OnInit, OnDestroy {
         }),
         mergeMap((session) => {
           this.session = session;
+          this.titleService.setTitle(this.session.name);
           return forkJoin([
             this.feedbackService.getAttendeeFeedback(this.session.id, (this.attendee as Attendee).id),
             this.feedbackService.getSessionFeedbackCounts(this.session.id)
