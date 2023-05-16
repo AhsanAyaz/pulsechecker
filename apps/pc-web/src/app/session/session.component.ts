@@ -22,6 +22,7 @@ import { UserService } from '../services/user.service';
 import { SupabaseService } from '../services/supabase.service';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { SessionFeedbackWithCount } from '../interfaces/session-feedback.interface';
+import { LoaderComponent } from '../components/loader/loader.component';
 
 @Component({
   selector: 'pulsechecker-session',
@@ -31,14 +32,15 @@ import { SessionFeedbackWithCount } from '../interfaces/session-feedback.interfa
     PulseMeterComponent,
     EmojiBarComponent,
     ReactiveFormsModule,
+    LoaderComponent,
     RouterModule
   ],
   templateUrl: './session.component.html',
   styleUrls: ['./session.component.scss'],
 })
 export class SessionComponent implements OnInit, OnDestroy {
-  colors: Pace[] = ['fast', 'moderate', 'good'];
-  feedbacks: SessionFeedbackWithCount = { fast: 0, moderate: 0, good: 0 };
+  colors: Pace[] = [Pace.slow, Pace.good, Pace.fast];
+  feedbacks: SessionFeedbackWithCount = { fast: 0, slow: 0, good: 0 };
   selectedPulse: Pace | null = null;
   sessionService = inject(SessionService);
   reactionsService = inject(ReactionsService);
@@ -99,6 +101,9 @@ export class SessionComponent implements OnInit, OnDestroy {
         if (attendeeFeedback) {
           this.pulseForm.controls.pulse.setValue(attendeeFeedback.pace);
           this.selectedPulse = attendeeFeedback.pace;
+        } else {
+          this.pulseForm.controls.pulse.setValue(Pace.good);
+          this.onPaceButtonClick(Pace.good);
         }
         this.initHandlers()
         this.isLoadingData = false;

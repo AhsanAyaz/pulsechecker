@@ -28,7 +28,7 @@ export class SessionDetailsComponent implements OnInit {
   supabase = inject(SupabaseService);
   feedbacksCounts: SessionFeedbackWithCount = {
     fast: 0,
-    moderate: 0,
+    slow: 0,
     good: 0
   }
   legendPosition: LegendPosition = LegendPosition.Below
@@ -40,7 +40,7 @@ export class SessionDetailsComponent implements OnInit {
     name: 'fast',
     value: 'red'
   }, {
-    name: 'moderate',
+    name: 'slow',
     value: 'yellow'
   }, {
     name: 'good',

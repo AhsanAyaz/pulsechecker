@@ -1,61 +1,74 @@
-<div class="min-h-screen flex flex-col bg-gradient-to-br from-purple-400 via-pink-500 to-red-500">
+<div class="min-h-screen flex flex-col bg-gradient-to-br"
+ [ngClass]="{
+  'from-green-400 via-green-600 to-green-900': selectedPulse === 'good',
+  'from-yellow-400 via-yellow-600 to-yellow-900': selectedPulse === 'slow',
+  'from-red-400 via-red-600 to-red-900': selectedPulse === 'fast',
+  'from-slate-400 via-slate-600 to-slate-900': !selectedPulse,
+ }">
   <header class="h-16 bg-white px-3 py-2 flex items-center justify-between">
     <a routerLink="/join">Pulse Checker</a>
     <button routerLink="/join">Leave</button>
   </header>
   <div class="flex-1 relative flex flex-col mx-auto justify-center">
-    <div class="m-4">
-      <h2 class="text-2xl text-center font-bold text-white mb-2">
-        {{session ? session.name : '...'}}
-      </h2>
-    </div>
-    <div class="my-4" *ngIf="session?.showRealtimePulse" [style.visibility]="isLoadingData ? 'hidden' : 'visible'">
-      <pulsechecker-pulse-meter [pulseData]="feedbacks"></pulsechecker-pulse-meter>
-    </div>
-    <div class="flex justify-center items-center h-max">
-      <div class="space-y-4 mt-4">
-        <form [formGroup]="pulseForm" class="flex gap-x-8 gap-y-2 justify-center">
-          <figure class="flex flex-col gap-4">
-            <input
-              type="radio"
-              id="fastPace"
-              name="pulse"
-              formControlName="pulse"
-              value="fast"
-              [ngClass]="pulseForm.controls.pulse.value === 'fast' ? 'ring-4 ring-red-300' : ''"
-              class="w-16 h-16 cursor-pointer hover:opacity-70 transition-all duration-300 appearance-none bg-red-500 rounded-full focus:outline-none focus:ring-4 focus:ring-red-300"
-            >
-            <label for="fastPace" class="text-white h-max cursor-pointer">Too fast</label>
-          </figure>
-          <figure class="flex flex-col gap-4">
-            <input
-              type="radio"
-              id="mediumPace"
-              name="pulse"
-              formControlName="pulse"
-              value="moderate"
-              [ngClass]="pulseForm.controls.pulse.value === 'moderate' ? 'ring-4 ring-yellow-300' : ''"
-              class="w-16 h-16 cursor-pointer hover:opacity-70 transition-all duration-300 appearance-none bg-yellow-500 rounded-full focus:outline-none focus:ring-4 focus:ring-yellow-300"
-            >
-            <label for="mediumPace" class="text-white h-max cursor-pointer">Moderate</label>
-          </figure>
-          <figure class="flex flex-col gap-4">
-            <input
-              type="radio"
-              id="goodPace"
-              name="pulse"  
-              formControlName="pulse"
-              value="good"
-              [ngClass]="pulseForm.controls.pulse.value === 'good' ? 'ring-4 ring-green-300' : ''"
-              class="w-16 h-16 cursor-pointer hover:opacity-70 transition-all duration-300 appearance-none bg-green-500 rounded-full focus:outline-none focus:ring-4 focus:ring-green-300"
-            >
-            <label for="goodPace" class="text-white h-max cursor-pointer">Good pace</label>
-          </figure>
-        </form>
+    <ng-container *ngIf="session; else loader">
+      <div class="m-4">
+        <h2 class="text-2xl text-center font-bold text-white mb-2">
+          {{session ? session.name : '...'}}
+        </h2>
       </div>
-    </div>
+      <div class="my-4 h-64" *ngIf="session?.showRealtimePulse" [style.visibility]="isLoadingData ? 'hidden' : 'visible'">
+        <pulsechecker-pulse-meter [pulseData]="feedbacks"></pulsechecker-pulse-meter>
+      </div>
+      <div class="flex justify-center items-center h-max">
+        <div class="space-y-4 mt-4">
+          <form [formGroup]="pulseForm" class="flex gap-x-8 gap-y-2 justify-center">
+            <figure class="flex flex-col gap-4">
+              <input
+                type="radio"
+                id="slowPace"
+                name="pulse"
+                formControlName="pulse"
+                value="slow"
+                [ngClass]="pulseForm.controls.pulse.value === 'slow' ? 'ring-4 ring-yellow-300' : ''"
+                class="w-16 h-16 cursor-pointer hover:opacity-70 transition-all duration-300 appearance-none bg-yellow-500 rounded-full focus:outline-none focus:ring-4 focus:ring-yellow-300"
+              >
+              <label for="slowPace" class="text-white h-max cursor-pointer">Too slow</label>
+            </figure>
+            <figure class="flex flex-col gap-4">
+              <input
+                type="radio"
+                id="goodPace"
+                name="pulse"  
+                formControlName="pulse"
+                value="good"
+                [ngClass]="pulseForm.controls.pulse.value === 'good' ? 'ring-4 ring-green-300' : ''"
+                class="w-16 h-16 cursor-pointer hover:opacity-70 transition-all duration-300 appearance-none bg-green-500 rounded-full focus:outline-none focus:ring-4 focus:ring-green-300"
+              >
+              <label for="goodPace" class="text-white h-max cursor-pointer">Good pace</label>
+            </figure>
+            <figure class="flex flex-col gap-4">
+              <input
+                type="radio"
+                id="fastPace"
+                name="pulse"
+                formControlName="pulse"
+                value="fast"
+                [ngClass]="pulseForm.controls.pulse.value === 'fast' ? 'ring-4 ring-red-300' : ''"
+                class="w-16 h-16 cursor-pointer hover:opacity-70 transition-all duration-300 appearance-none bg-red-500 rounded-full focus:outline-none focus:ring-4 focus:ring-red-300"
+              >
+              <label for="fastPace" class="text-white h-max cursor-pointer">Too fast</label>
+            </figure>
+          </form>
+        </div>
+      </div>
+    </ng-container>
   </div>
   <div class="bg-white p-2">
     <pulsechecker-emoji-bar (emojiSelected)="onEmojiTapped($event)"></pulsechecker-emoji-bar>
   </div>
 </div>
+<ng-template #loader>
+  <div class="w-full h-full flex justify-center items-center">
+    <pulsechecker-loader [size]="64" color="white"></pulsechecker-loader>
+  </div>
+</ng-template>

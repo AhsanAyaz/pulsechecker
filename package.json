@@ -4,9 +4,11 @@
   "license": "MIT",
   "scripts": {
     "serve:be": "npx nx serve pc-be",
+    "serve:web": "npx nx serve pc-web",
     "serve:be:prod": "node ./dist/apps/pc-be/main.js",
     "build:be": "npx nx build pc-be",
     "start:db": "docker compose up db",
+    "start": "concurrently 'npm run serve:be' 'npm run serve:web'",
     "start:be:prod": "npm run build:be && npx prisma generate && npx prisma migrate deploy && npm run serve:be:prod"
   },
   "private": true,
@@ -67,6 +69,7 @@
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
     "autoprefixer": "^10.4.0",
+    "concurrently": "^8.0.1",
     "cypress": "^12.2.0",
     "eslint": "~8.15.0",
     "eslint-config-prettier": "8.1.0",

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, HostBinding, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -10,6 +10,8 @@ import { CommonModule } from '@angular/common';
 })
 export class LoaderComponent {
   @Input() size = 64;
+  @HostBinding("style.--bg-color")
+  @Input() color = 'rgb(147 51 234)';
 
   get sizePx(): string {
     return `${this.size}px`;

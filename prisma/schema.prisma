@@ -12,16 +12,16 @@ model Attendee {
   displayName String
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  sessions    Session[]  @relation("AttendeeToSession")
   feedbacks   Feedback[]
+  sessions    Session[]  @relation("AttendeeToSession")
 }
 
 model Feedback {
-  pace       Pace
+  pace       Pace     @default(value: good)
   sessionId  Int
-  session    Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   attendeeId Int
   attendee   Attendee @relation(fields: [attendeeId], references: [id], onDelete: Cascade)
+  session    Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
   @@id([sessionId, attendeeId])
 }
@@ -35,11 +35,11 @@ model Session {
   updatedAt         DateTime        @updatedAt
   name              String
   published         Boolean         @default(false)
-  host              User?           @relation(fields: [userId], references: [id])
-  reactions         ReactionCount[]
-  participants      Attendee[]      @relation("AttendeeToSession")
-  Feedback          Feedback[]
   showRealtimePulse Boolean         @default(false)
+  Feedback          Feedback[]
+  reactions         ReactionCount[]
+  host              User            @relation(fields: [userId], references: [id])
+  participants      Attendee[]      @relation("AttendeeToSession")
 }
 
 model ReactionCount {
@@ -52,14 +52,14 @@ model ReactionCount {
 }
 
 model User {
-  id           String       @id @unique()
+  id           String       @id @unique
   displayName  String
-  email        String       @unique()
-  authProvider AuthProvider
-  providerId   String
-  avatarUrl    String?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
+  authProvider AuthProvider
+  email        String       @unique
+  providerId   String
+  avatarUrl    String?
   sessions     Session[]
 }
 
@@ -70,6 +70,6 @@ enum AuthProvider {
 
 enum Pace {
   fast
-  moderate
+  slow
   good
 }
