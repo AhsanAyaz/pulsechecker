@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-
+import { ThrottlerModule } from "@nestjs/throttler";
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -15,6 +15,7 @@ import { FeedbackModule } from './feedback/feedback.module';
     AttendeeModule,
     SessionsModule,
     FeedbackModule,
+    ThrottlerModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,15 +1,12 @@
-import { inject, Injectable } from '@angular/core';
+import { inject } from '@angular/core';
 import {
   HttpRequest,
-  HttpHandler,
   HttpEvent,
-  HttpInterceptor,
   HttpInterceptorFn,
   HttpHandlerFn
 } from '@angular/common/http';
 import { from, mergeMap, Observable } from 'rxjs';
 import { SupabaseService } from '../services/supabase.service';
-import { Session } from '@supabase/supabase-js';
 import { environment } from '../environments/environment';
 
 export const AuthInterceptor: HttpInterceptorFn = (request: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>>  => {

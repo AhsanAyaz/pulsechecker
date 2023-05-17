@@ -7,6 +7,8 @@ import { SupabaseService } from '../services/supabase.service';
 import { UserService } from '../services/user.service';
 import { Attendee } from '@prisma/client';
 
+const ANONYMOUS_USERNAME = 'Anonymous User';
+
 @Component({
   selector: 'pulsechecker-join-session',
   standalone: true,
@@ -22,10 +24,9 @@ export class JoinSessionComponent implements OnInit {
   supabase = inject(SupabaseService);
   route = inject(ActivatedRoute);
   attendee!: Partial<Attendee>;
-  
   ngOnInit(): void {
     this.attendee = this.userService.getAttendeeFromStorage() || {
-      displayName: '',
+      displayName: ANONYMOUS_USERNAME,
     };
     const session = this.route.snapshot.queryParamMap.get('session');
     if (session) {
@@ -34,6 +35,9 @@ export class JoinSessionComponent implements OnInit {
   }
 
   joinMeeting(): void {
+    if (!this.attendee.displayName) {
+      this.attendee.displayName = ANONYMOUS_USERNAME;
+    }
     this.sessionService
       .joinSession({
         meetingId: this.meetingId,
