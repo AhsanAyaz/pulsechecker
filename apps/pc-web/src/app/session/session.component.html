@@ -30,7 +30,7 @@
                 formControlName="pulse"
                 value="slow"
                 [ngClass]="pulseForm.controls.pulse.value === 'slow' ? 'ring-4 ring-yellow-300' : ''"
-                class="w-16 h-16 cursor-pointer hover:opacity-70 transition-all duration-300 appearance-none bg-yellow-500 rounded-full focus:outline-none focus:ring-4 focus:ring-yellow-300"
+                class="disabled:invisible w-16 h-16 cursor-pointer hover:opacity-70 transition-all duration-300 appearance-none bg-yellow-500 rounded-full focus:outline-none focus:ring-4 focus:ring-yellow-300"
               >
               <label for="slowPace" class="text-white h-max cursor-pointer">Too slow</label>
             </figure>
@@ -42,7 +42,7 @@
                 formControlName="pulse"
                 value="good"
                 [ngClass]="pulseForm.controls.pulse.value === 'good' ? 'ring-4 ring-green-300' : ''"
-                class="w-16 h-16 cursor-pointer hover:opacity-70 transition-all duration-300 appearance-none bg-green-500 rounded-full focus:outline-none focus:ring-4 focus:ring-green-300"
+                class="disabled:invisible w-16 h-16 cursor-pointer hover:opacity-70 transition-all duration-300 appearance-none bg-green-500 rounded-full focus:outline-none focus:ring-4 focus:ring-green-300"
               >
               <label for="goodPace" class="text-white h-max cursor-pointer">Good pace</label>
             </figure>
@@ -53,8 +53,8 @@
                 name="pulse"
                 formControlName="pulse"
                 value="fast"
-                [ngClass]="pulseForm.controls.pulse.value === 'fast' ? 'ring-4 ring-red-300' : ''"
-                class="w-16 h-16 cursor-pointer hover:opacity-70 transition-all duration-300 appearance-none bg-red-500 rounded-full focus:outline-none focus:ring-4 focus:ring-red-300"
+                [ngClass]="pulseForm.controls.pulse.value === 'fast' ? 'enabled:ring-4 enabled:ring-red-300' : ''"
+                class="disabled:invisible w-16 h-16 cursor-pointer enabled:hover:opacity-70 transition-all duration-300 appearance-none bg-red-500 rounded-full enabled:focus:outline-none enabled:focus:ring-4 enabled:focus:ring-red-300"
               >
               <label for="fastPace" class="text-white h-max cursor-pointer">Too fast</label>
             </figure>

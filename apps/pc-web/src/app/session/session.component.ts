@@ -9,6 +9,7 @@ import {
   EMPTY,
   catchError,
   debounceTime,
+  distinctUntilChanged,
   filter,
   forkJoin,
   mergeMap,
@@ -66,6 +67,7 @@ export class SessionComponent implements OnInit, OnDestroy {
   attendee!: Attendee | null;
   realtimeChannel!: RealtimeChannel;
   isLoadingData = false;
+  sendingFeedback = true;
 
   ngOnInit(): void {
     this.componentAlive = true;
@@ -140,12 +142,16 @@ export class SessionComponent implements OnInit, OnDestroy {
       .pipe(
         debounceTime(500),
         filter((val) => !!val.pulse),
+        distinctUntilChanged(),
         takeWhile(() => this.componentAlive)
       )
       .subscribe((val) => {
         if (!val.pulse) {
           return;
         }
+        this.pulseForm.controls.pulse.disable({
+          emitEvent: false
+        });
         this.onPaceButtonClick(val.pulse);
       });
 
@@ -180,6 +186,9 @@ export class SessionComponent implements OnInit, OnDestroy {
       updateFrom = this.selectedPulse;
       this.feedbacks[this.selectedPulse]--;
     } else if (this.selectedPulse === color) {
+      this.pulseForm.controls.pulse.enable({
+        emitEvent: false
+      });
       return;
     }
     this.selectedPulse = color;
@@ -209,18 +218,36 @@ export class SessionComponent implements OnInit, OnDestroy {
     }
     this.feedbackService
       .saveFeedback(this.session.id, pulse as string, this.attendee.id)
-      .subscribe((result) => {
-        console.log({ result });
-        this.realtimeChannel
-        .send({
-          type: 'broadcast',
-          event: updateFrom !== null ? 'pulse-updated' : 'pulse-added',
-          pace: result.pace,
-          paceFrom: updateFrom,
-          sessionId: this.session.id,
-          attendeeId: this.attendee?.id,
-          attendee: this.attendee
-        })
+      .subscribe({
+        next: (result) => {
+          this.realtimeChannel
+          .send({
+            type: 'broadcast',
+            event: updateFrom !== null ? 'pulse-updated' : 'pulse-added',
+            pace: result.pace,
+            paceFrom: updateFrom,
+            sessionId: this.session.id,
+            attendeeId: this.attendee?.id,
+            attendee: this.attendee
+          })
+        }, error: () => {
+            if (updateFrom === null) {
+              return;
+            }
+            this.feedbacks[this.selectedPulse as Pace]--;
+            this.feedbacks[updateFrom as Pace]++;
+            this.selectedPulse = updateFrom;
+            this.pulseForm.controls.pulse.setValue(this.selectedPulse, {
+              emitEvent: false
+            })
+            this.pulseForm.controls.pulse.enable({
+              emitEvent: false
+            });
+        }, complete: () => {
+          this.pulseForm.controls.pulse.enable({
+            emitEvent: false
+          });
+        }
       });
   }
 }
