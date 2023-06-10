@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PulseMeterComponent } from '../components/pulse-meter/pulse-meter.component';
 import { EmojiBarComponent } from '../components/emoji-bar/emoji-bar.component';
@@ -28,7 +28,7 @@ import { LoaderComponent } from '../components/loader/loader.component';
 import { Title } from '@angular/platform-browser';
 import { Modal, initTE, Input } from 'tw-elements';
 import { FeedbackModalComponent } from '../components/feedback-modal/feedback-modal.component';
-
+import { WalkthroughService } from '../services/walkthrough.service';
 
 @Component({
   selector: 'pulsechecker-session',
@@ -45,9 +45,10 @@ import { FeedbackModalComponent } from '../components/feedback-modal/feedback-mo
   templateUrl: './session.component.html',
   styleUrls: ['./session.component.scss'],
 })
-export class SessionComponent implements OnInit, OnDestroy {
+export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
   colors: Pace[] = [Pace.slow, Pace.good, Pace.fast];
   feedbacks: SessionFeedbackWithCount = { fast: 0, slow: 0, good: 0 };
+  walkthroughService = inject(WalkthroughService);
   sessionService = inject(SessionService);
   reactionsService = inject(ReactionsService);
   feedbackService = inject(FeedbackService);
@@ -77,6 +78,16 @@ export class SessionComponent implements OnInit, OnDestroy {
     pace: Pace.good,
     comment: ''
   };
+
+  ngAfterViewInit() {
+    this.walkthroughService.start();
+  }
+
+  feedbackCommentTriggerClick() {
+    if (this.walkthroughService.isActive()) {
+      this.walkthroughService.stop()
+    }
+  }
 
   ngOnInit(): void {
     initTE({Modal, Input})

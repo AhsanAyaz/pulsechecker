@@ -227,7 +227,7 @@
     symbol-observable "4.0.0"
     yargs "17.6.2"
 
-"@angular/common@^15.0.0 || ^16.0.0", "@angular/common@>=12.0.0", "@angular/common@~15.2.0", "@angular/common@15.2.8":
+"@angular/common@^15.0.0", "@angular/common@^15.0.0 || ^16.0.0", "@angular/common@>=12.0.0", "@angular/common@~15.2.0", "@angular/common@15.2.8":
   version "15.2.8"
   resolved "https://registry.npmjs.org/@angular/common/-/common-15.2.8.tgz"
   integrity sha512-yLDQihiRcVl38HrWMPbqgzOaSUw85AQH5BsGdjbS6BpoBQj3EXOpccCMFsuxOKxPG4toatgawNqrEnK0Jpv9Mw==
@@ -257,7 +257,7 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/core@^15.0.0 || ^16.0.0", "@angular/core@>=12.0.0", "@angular/core@>=13.0.0 <16.0.0", "@angular/core@~15.2.0", "@angular/core@15.2.8":
+"@angular/core@^15.0.0", "@angular/core@^15.0.0 || ^16.0.0", "@angular/core@>=12.0.0", "@angular/core@>=13.0.0 <16.0.0", "@angular/core@~15.2.0", "@angular/core@15.2.8":
   version "15.2.8"
   resolved "https://registry.npmjs.org/@angular/core/-/core-15.2.8.tgz"
   integrity sha512-NDs+g4uM4EhyCvluf8a0YBCFXsDAEfCMHOD5cS00Bl+liTQ7JwtmepkWXMyjLB92irC9JaR79kdy4BoIKOh8WA==
@@ -1597,6 +1597,18 @@
     js-yaml "^4.1.0"
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
+
+"@floating-ui/core@^1.2.6":
+  version "1.2.6"
+  resolved "https://registry.npmjs.org/@floating-ui/core/-/core-1.2.6.tgz"
+  integrity sha512-EvYTiXet5XqweYGClEmpu3BoxmsQ4hkj3QaYA6qEnigCWffTP3vNRwBReTdrwDwo7OoJ3wM8Uoe9Uk4n+d4hfg==
+
+"@floating-ui/dom@^1.2.5":
+  version "1.2.9"
+  resolved "https://registry.npmjs.org/@floating-ui/dom/-/dom-1.2.9.tgz"
+  integrity sha512-sosQxsqgxMNkV3C+3UqTS6LxP7isRLwX8WMepp843Rb3/b0Wz8+MdUkxJksByip3C2WwLugLHN1b4ibn//zKwQ==
+  dependencies:
+    "@floating-ui/core" "^1.2.6"
 
 "@gar/promisify@^1.1.3":
   version "1.1.3"
@@ -3768,6 +3780,14 @@ ajv@^8.0.0, ajv@^8.8.2, ajv@^8.9.0, ajv@8.12.0:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
+angular-shepherd@^15.0.0:
+  version "15.0.0"
+  resolved "https://registry.npmjs.org/angular-shepherd/-/angular-shepherd-15.0.0.tgz"
+  integrity sha512-hX+vOQ+W6W69gLa5c1Crec6MMByIPolsu0ZAHU1pHzANL3KZ0+HglCGCpL58tAWXtxrMHb0P39XrrONLre9XLg==
+  dependencies:
+    shepherd.js "^11.0.0"
+    tslib "^2.3.0"
+
 ansi-colors@^4.1.1, ansi-colors@4.1.3:
   version "4.1.3"
   resolved "https://registry.npmjs.org/ansi-colors/-/ansi-colors-4.1.3.tgz"
@@ -5385,7 +5405,7 @@ deep-is@^0.1.3, deep-is@~0.1.3:
   resolved "https://registry.npmjs.org/deep-is/-/deep-is-0.1.4.tgz"
   integrity sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==
 
-deepmerge@^4.2.2:
+deepmerge@^4.2.2, deepmerge@^4.3.1:
   version "4.3.1"
   resolved "https://registry.npmjs.org/deepmerge/-/deepmerge-4.3.1.tgz"
   integrity sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==
@@ -10706,6 +10726,14 @@ shell-quote@^1.7.3, shell-quote@^1.8.0:
   version "1.8.1"
   resolved "https://registry.npmjs.org/shell-quote/-/shell-quote-1.8.1.tgz"
   integrity sha512-6j1W9l1iAs/4xYBI1SYOVZyFcCis9b4KCLQ8fgAGG07QvzaRLVVRQvAy85yNmmZSjYjg4MWh4gNvlPujU/5LpA==
+
+shepherd.js@^11.0.0, shepherd.js@^11.1.1:
+  version "11.1.1"
+  resolved "https://registry.npmjs.org/shepherd.js/-/shepherd.js-11.1.1.tgz"
+  integrity sha512-7nVEgLTZUu5qQCKTlzQeKL1AQd2rG9Y9iqzZUgGvCFwMUZZhfwtZ6eEyMWMYw0zl8qKjSrjgzxFOe+SpfO43aA==
+  dependencies:
+    "@floating-ui/dom" "^1.2.5"
+    deepmerge "^4.3.1"
 
 side-channel@^1.0.4:
   version "1.0.4"

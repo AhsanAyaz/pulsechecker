@@ -11,6 +11,8 @@
       <button
         type="button"
         title="Feedback/Comments"
+        id="feedbackCommentTrigger"
+        (click)="feedbackCommentTriggerClick()"
         class="block rounded bg-transparent text-slate-900 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal transition duration-150 ease-in-out hover:bg-purple-700 hover:text-white focus:bg-purple-800 focus:outline-none focus:text-white focus:ring-0 active:bg-purple-800 active:text-white dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
         [ngClass]="{'group stroke-purple-500 stroke-2 hover:stroke-white': attendeeFeedback.comment}" 
         data-te-toggle="modal"
