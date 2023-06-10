@@ -1,0 +1,24 @@
+#pcApp {
+  .shepherd-arrow {
+    &::before {
+      @apply bg-purple-700;
+    }
+  }
+  .shepherd-content {
+    .shepherd-header {
+      @apply px-4 py-2 bg-purple-700;
+      .shepherd-title {
+        @apply text-white;
+      }
+    }
+    .shepherd-text {
+      @apply min-h-[60px];
+    }
+    .shepherd-cancel-icon {
+      @apply text-white duration-200;
+      &:hover {
+        @apply text-slate-900;
+      }
+    }
+  }
+}

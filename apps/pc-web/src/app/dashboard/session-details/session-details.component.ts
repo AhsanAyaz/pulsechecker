@@ -101,7 +101,8 @@ export class SessionDetailsComponent implements OnInit {
         pace,
         attendee,
         attendeeId,
-        sessionId: this.session.id
+        sessionId: this.session.id,
+        comment: ''
       })
     })
     .on('broadcast', { event: 'pulse-updated' }, (payload) => {
@@ -131,10 +132,7 @@ export class SessionDetailsComponent implements OnInit {
         return feedback;
       })
     })
-    .subscribe((status) => {
-      if (status === 'SUBSCRIBED') {
-        console.log('YEAH!');
-      }
-    })
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+    .subscribe((_) => {})
   }
 }

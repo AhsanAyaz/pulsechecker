@@ -16,7 +16,10 @@
         "polyfills": ["zone.js"],
         "tsConfig": "apps/pc-web/tsconfig.app.json",
         "assets": ["apps/pc-web/src/favicon.ico", "apps/pc-web/src/assets"],
-        "styles": ["apps/pc-web/src/styles.scss"],
+        "styles": [
+          "apps/pc-web/src/styles.scss",
+          "node_modules/shepherd.js/dist/css/shepherd.css"
+        ],
         "scripts": []
       },
       "configurations": {
