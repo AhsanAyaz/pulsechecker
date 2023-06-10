@@ -13,12 +13,10 @@ export class FeedbackService {
   private apiUrl = environment.apiBaseUrl;
   http = inject(HttpClient);
 
-  saveFeedback(sessionId: number, pace: string, attendeeId: number): Observable<Feedback> {
-    return this.http.post<Feedback>(`${this.apiUrl}/sessions/${sessionId}/feedback`, {
+  saveFeedback(feedback: Omit<Feedback, 'id'>): Observable<Feedback> {
+    return this.http.post<Feedback>(`${this.apiUrl}/sessions/${feedback}/feedback`, {
       feedback: {
-        pace,
-        attendeeId,
-        sessionId
+        ...feedback
       }
     })
   }

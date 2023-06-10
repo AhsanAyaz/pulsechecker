@@ -4,12 +4,18 @@ import { JoinSessionDto } from '../sessions/dto/join-session.dto';
 import { CreateReactionsCountDto } from './dto/create-reactions-count.dto';
 import { UpdateReactionsCountDto } from './dto/update-reactions-count.dto';
 
+const MAX_COUNT_LIMIT = 1000;
+
 @Injectable()
 export class ReactionsCountService {
   constructor(private prisma: PrismaService) {}
 
   async create(createReactionsCountDto: CreateReactionsCountDto) {
-    const {sessionId, reactionType, count} = createReactionsCountDto;
+    const {sessionId, reactionType} = createReactionsCountDto;
+    let { count } = createReactionsCountDto;
+    if (count > MAX_COUNT_LIMIT) {
+      count = MAX_COUNT_LIMIT;
+    }
     const session = await this.prisma.reactionCount.findFirst({
       where: {
         sessionId,

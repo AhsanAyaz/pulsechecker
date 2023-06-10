@@ -1,13 +1,26 @@
 <div class="min-h-screen flex flex-col bg-gradient-to-br"
  [ngClass]="{
-  'from-green-400 via-green-600 to-green-900': selectedPulse === 'good',
-  'from-yellow-400 via-yellow-600 to-yellow-900': selectedPulse === 'slow',
-  'from-red-400 via-red-600 to-red-900': selectedPulse === 'fast',
-  'from-slate-400 via-slate-600 to-slate-900': !selectedPulse,
+  'from-green-400 via-green-600 to-green-900': this.attendeeFeedback.pace === 'good',
+  'from-yellow-400 via-yellow-600 to-yellow-900': this.attendeeFeedback.pace === 'slow',
+  'from-red-400 via-red-600 to-red-900': this.attendeeFeedback.pace === 'fast',
+  'from-slate-400 via-slate-600 to-slate-900': !this.attendeeFeedback.pace,
  }">
   <header class="h-16 bg-white px-3 py-2 flex items-center justify-between">
     <a routerLink="/join">Pulse Checker</a>
-    <button routerLink="/join">Leave</button>
+    <span class="flex items-center gap-4">
+      <button
+        type="button"
+        title="Feedback/Comments"
+        class="block rounded bg-transparent text-slate-900 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal transition duration-150 ease-in-out hover:bg-purple-700 hover:text-white focus:bg-purple-800 focus:outline-none focus:text-white focus:ring-0 active:bg-purple-800 active:text-white dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+        [ngClass]="{'group stroke-purple-500 stroke-2 hover:stroke-white': attendeeFeedback.comment}" 
+        data-te-toggle="modal"
+        data-te-target="#commentsModal">
+        <svg class="duration-200" [ngClass]="{'stroke-purple-500 stroke-2 group-hover:stroke-white': attendeeFeedback.comment}"  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+        </svg>
+      </button>
+    <button routerLink="/join" class="inline-block rounded bg-slate-600 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-slate-700 focus:bg-slate-800 focus:outline-none focus:ring-0 active:bg-slate-800 dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]">Leave</button>
+    </span>
   </header>
   <div class="flex-1 relative flex flex-col mx-auto justify-center">
     <ng-container *ngIf="session; else loader">
@@ -72,3 +85,7 @@
     <pulsechecker-loader [size]="64" color="white"></pulsechecker-loader>
   </div>
 </ng-template>
+
+
+<pulsechecker-feedback-modal (feedbackSubmit)="feedbackCommentSubmit($event)" *ngIf="attendeeFeedback && session" [session]="session" [feedback]="attendeeFeedback">
+</pulsechecker-feedback-modal>

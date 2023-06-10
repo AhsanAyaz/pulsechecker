@@ -2,13 +2,21 @@ import { Injectable } from '@nestjs/common';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { UpdateFeedbackDto } from './dto/update-feedback.dto';
 import { PrismaService } from '../../prisma/prisma.service';
+import { Feedback } from '@prisma/client';
 
 @Injectable()
 export class FeedbackService {
 
   constructor(private readonly prisma: PrismaService) {}
   create(createFeedbackDto: CreateFeedbackDto) {
-    const {attendeeId, sessionId} = createFeedbackDto.feedback;
+    const {attendeeId, sessionId, pace, comment} = createFeedbackDto.feedback;
+    const update: Partial<Feedback> = {};
+    if (comment !== undefined) {
+      update.comment = comment;
+    }
+    if (pace) {
+      update.pace = pace;
+    }
     return this.prisma.feedback.upsert({
       where: {
         sessionId_attendeeId: {
@@ -17,9 +25,7 @@ export class FeedbackService {
         }
       },
       create: createFeedbackDto.feedback,
-      update: {
-        pace: createFeedbackDto.feedback.pace
-      }
+      update
     });
   }
 
