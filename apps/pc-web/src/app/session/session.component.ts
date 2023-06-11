@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PulseMeterComponent } from '../components/pulse-meter/pulse-meter.component';
 import { EmojiBarComponent } from '../components/emoji-bar/emoji-bar.component';
@@ -45,7 +45,7 @@ import { WalkthroughService } from '../services/walkthrough.service';
   templateUrl: './session.component.html',
   styleUrls: ['./session.component.scss'],
 })
-export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
+export class SessionComponent implements OnInit, OnDestroy {
   colors: Pace[] = [Pace.slow, Pace.good, Pace.fast];
   feedbacks: SessionFeedbackWithCount = { fast: 0, slow: 0, good: 0 };
   walkthroughService = inject(WalkthroughService);
@@ -79,10 +79,6 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
     comment: ''
   };
 
-  ngAfterViewInit() {
-    this.walkthroughService.start();
-  }
-
   feedbackCommentTriggerClick() {
     if (this.walkthroughService.isActive()) {
       this.walkthroughService.stop()
@@ -99,7 +95,6 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
     this.isLoadingData = true;
-
     this.userService.getAttendeeFromServer(this.attendee.id)
       .pipe(
         mergeMap(attendee => {
@@ -145,6 +140,7 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         this.initHandlers()
         this.isLoadingData = false;
+        this.walkthroughService.start();
       });
   }
 
