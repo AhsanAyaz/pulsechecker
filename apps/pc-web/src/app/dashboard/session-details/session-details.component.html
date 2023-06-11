@@ -41,12 +41,14 @@
           <tr>
             <th class="px-4 py-2 text-left text-gray-600">Attendee</th>
             <th class="px-4 py-2 text-left text-gray-600">Pace</th>
+            <th class="px-4 py-2 text-left text-gray-600">Comment</th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           <tr *ngFor="let fb of session?.Feedback">
             <td class="px-4 py-2 text-xl">{{fb.attendee.displayName}}</td>
             <td class="px-4 py-2">{{ fb.pace }}</td>
+            <td class="px-4 py-2">{{ fb.comment }}</td>
           </tr>
         </tbody>
       </table>
