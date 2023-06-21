@@ -9,7 +9,6 @@ import {
   EMPTY,
   catchError,
   debounceTime,
-  distinctUntilChanged,
   filter,
   forkJoin,
   mergeMap,
@@ -18,7 +17,7 @@ import {
 import { ReactionsService } from '../services/reactions.service';
 import { Reactions } from '../interfaces/reactions.interface';
 import { Attendee, Feedback, Pace, Session } from '@prisma/client';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FeedbackService } from '../services/feedback.service';
 import { UserService } from '../services/user.service';
 import { SupabaseService } from '../services/supabase.service';
@@ -27,7 +26,6 @@ import { SessionFeedbackWithCount } from '../interfaces/session-feedback.interfa
 import { LoaderComponent } from '../components/loader/loader.component';
 import { Title } from '@angular/platform-browser';
 import { Modal, initTE, Input } from 'tw-elements';
-import { FeedbackModalComponent } from '../components/feedback-modal/feedback-modal.component';
 import { WalkthroughService } from '../services/walkthrough.service';
 
 @Component({
@@ -40,7 +38,6 @@ import { WalkthroughService } from '../services/walkthrough.service';
     ReactiveFormsModule,
     LoaderComponent,
     RouterModule,
-    FeedbackModalComponent
   ],
   templateUrl: './session.component.html',
   styleUrls: ['./session.component.scss'],
@@ -65,19 +62,16 @@ export class SessionComponent implements OnInit, OnDestroy {
       count: 0,
     });
   pulseForm = new FormGroup({
-    pulse: new FormControl<Pace | null>(null, { nonNullable: true }),
+    pace: new FormControl<Pace | null>(null, { nonNullable: true, validators: [Validators.required] }),
+    comment: new FormControl('')
   });
   componentAlive = true;
   attendee!: Attendee | null;
   realtimeChannel!: RealtimeChannel;
   isLoadingData = false;
   sendingFeedback = true;
-  attendeeFeedback: Feedback = {
-    sessionId: 0,
-    attendeeId: 0,
-    pace: Pace.good,
-    comment: ''
-  };
+  attendeeFeedback: Feedback | null = null;
+  submittingFeedback = false;
 
   feedbackCommentTriggerClick() {
     if (this.walkthroughService.isActive()) {
@@ -132,11 +126,18 @@ export class SessionComponent implements OnInit, OnDestroy {
         };
         
         if (attendeeFeedback) {
-          this.pulseForm.controls.pulse.setValue(attendeeFeedback.pace);
+          this.pulseForm.controls.pace.setValue(attendeeFeedback.pace);
+          this.pulseForm.controls.comment.setValue(attendeeFeedback.comment);
           this.attendeeFeedback = attendeeFeedback;
         } else {
-          this.pulseForm.controls.pulse.setValue(Pace.good);
+          this.pulseForm.controls.pace.setValue(null);
           this.onPaceButtonClick(Pace.good);
+          this.attendeeFeedback = {
+            pace: null as unknown as Pace,
+            comment: '',
+            attendeeId: this.attendee?.id as number,
+            sessionId: this.session.id
+          };
         }
         this.initHandlers()
         this.isLoadingData = false;
@@ -154,23 +155,6 @@ export class SessionComponent implements OnInit, OnDestroy {
       )
       .subscribe((val) => {
         this.saveReaction(val.emoji, val.count);
-      });
-
-    this.pulseForm.valueChanges
-      .pipe(
-        debounceTime(500),
-        filter((val) => !!val.pulse),
-        distinctUntilChanged(),
-        takeWhile(() => this.componentAlive)
-      )
-      .subscribe((val) => {
-        if (!val.pulse) {
-          return;
-        }
-        this.pulseForm.controls.pulse.disable({
-          emitEvent: false
-        });
-        this.onPaceButtonClick(val.pulse);
       });
 
     this.realtimeChannel = this.supabase.client.channel(`session_${this.session.id}`);
@@ -191,8 +175,29 @@ export class SessionComponent implements OnInit, OnDestroy {
     .subscribe((_) => {})
   }
 
+  submitFeedback(event: SubmitEvent) {
+    event.preventDefault();
+    const pace = this.pulseForm.controls.pace.value;
+    if (!pace || !this.attendeeFeedback) {
+      return;
+    }
+    let updateFrom: Pace | null = null;
+    if (!!this.attendeeFeedback.pace && this.attendeeFeedback.pace !== pace) {
+      updateFrom = this.attendeeFeedback.pace;
+      this.feedbacks[this.attendeeFeedback.pace]--;
+    } else if (this.attendeeFeedback.pace === pace) {
+      this.pulseForm.controls.pace.enable({
+        emitEvent: false
+      });
+    }
+    this.attendeeFeedback.pace = pace;
+    this.attendeeFeedback.comment = this.pulseForm.controls.comment.value;
+    this.feedbacks[pace]++;
+    this.saveFeedback(this.attendeeFeedback, updateFrom);
+  }
+
   feedbackCommentSubmit(comment: string | null) {
-    if (comment === null) {
+    if (comment === null || !this.attendeeFeedback) {
       return;
     }
     this.attendeeFeedback.comment = comment;
@@ -205,11 +210,14 @@ export class SessionComponent implements OnInit, OnDestroy {
 
   onPaceButtonClick(pace: Pace): void {
     let updateFrom: Pace | null = null;
+    if (!this.attendeeFeedback) {
+      return;
+    }
     if (!!this.attendeeFeedback.pace && this.attendeeFeedback.pace !== pace) {
       updateFrom = this.attendeeFeedback.pace;
       this.feedbacks[this.attendeeFeedback.pace]--;
     } else if (this.attendeeFeedback.pace === pace) {
-      this.pulseForm.controls.pulse.enable({
+      this.pulseForm.controls.pace.enable({
         emitEvent: false
       });
       return;
@@ -236,7 +244,7 @@ export class SessionComponent implements OnInit, OnDestroy {
   }
 
   saveFeedback(feedback: Pick<Feedback, 'pace' | 'comment'>, updateFrom: Pace | null) {
-    if (!this.attendee) {
+    if (!this.attendee || !this.attendeeFeedback) {
       return;
     }
     const feedbackParams: Omit<Feedback, 'id'> = {
@@ -246,6 +254,7 @@ export class SessionComponent implements OnInit, OnDestroy {
       comment: feedback.comment || this.attendeeFeedback.comment || ''
     }
     
+    this.submittingFeedback = true;
     this.feedbackService
       .saveFeedback(feedbackParams)
       .subscribe({
@@ -261,21 +270,23 @@ export class SessionComponent implements OnInit, OnDestroy {
             attendeeId: this.attendee?.id,
             attendee: this.attendee
           })
+          alert('Feedback submitted');
         }, error: () => {
-            if (updateFrom === null) {
+            if (updateFrom === null || !this.attendeeFeedback) {
               return;
             }
             this.feedbacks[this.attendeeFeedback.pace]--;
             this.feedbacks[updateFrom as Pace]++;
             this.attendeeFeedback.pace = updateFrom;
-            this.pulseForm.controls.pulse.setValue(this.attendeeFeedback.pace, {
+            this.pulseForm.controls.pace.setValue(this.attendeeFeedback.pace, {
               emitEvent: false
             })
-            this.pulseForm.controls.pulse.enable({
+            this.pulseForm.controls.pace.enable({
               emitEvent: false
             });
         }, complete: () => {
-          this.pulseForm.controls.pulse.enable({
+          this.submittingFeedback = false;
+          this.pulseForm.controls.pace.enable({
             emitEvent: false
           });
         }
