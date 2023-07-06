@@ -17,10 +17,10 @@ model Attendee {
 }
 
 model Feedback {
-  pace       Pace     @default(value: good)
+  pace       Pace?    @default(value: good)
   sessionId  Int
   attendeeId Int
-  comment    String?   @default(value: "")
+  comment    String?  @default(value: "")
   attendee   Attendee @relation(fields: [attendeeId], references: [id], onDelete: Cascade)
   session    Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
@@ -37,6 +37,9 @@ model Session {
   name              String
   published         Boolean         @default(false)
   showRealtimePulse Boolean         @default(false)
+  privacyLevel      PrivacyLevel    @default(PUBLIC)
+  projectId         String?
+  project           Project?        @relation(fields: [projectId], references: [id])
   Feedback          Feedback[]
   reactions         ReactionCount[]
   host              User            @relation(fields: [userId], references: [id])
@@ -53,15 +56,40 @@ model ReactionCount {
 }
 
 model User {
-  id           String       @id @unique
-  displayName  String
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  authProvider AuthProvider
-  email        String       @unique
-  providerId   String
-  avatarUrl    String?
-  sessions     Session[]
+  id             String                 @id @unique
+  displayName    String
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  authProvider   AuthProvider
+  email          String                 @unique
+  providerId     String
+  avatarUrl      String?
+  sessions       Session[]
+  ownedProjects  Project[]              @relation("owner")
+  collaborations ProjectCollaboration[]
+}
+
+model Project {
+  id             String                 @id @unique
+  name           String
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  avatarUrl      String?
+  ownerId        String
+  owner          User                   @relation("owner", fields: [ownerId], references: [id])
+  collaborations ProjectCollaboration[]
+  privacyLevel   PrivacyLevel           @default(PUBLIC)
+  sessions       Session[]
+}
+
+model ProjectCollaboration {
+  projectId   String
+  userId      String
+  project     Project     @relation(fields: [projectId], references: [id])
+  user        User        @relation(fields: [userId], references: [id])
+  accessLevel AccessLevel @default(READ)
+
+  @@id([projectId, userId])
 }
 
 enum AuthProvider {
@@ -73,4 +101,16 @@ enum Pace {
   fast
   slow
   good
+}
+
+enum PrivacyLevel {
+  PRIVATE
+  PROJECT
+  PUBLIC
+}
+
+enum AccessLevel {
+  READ
+  WRITE
+  COMMENT
 }
