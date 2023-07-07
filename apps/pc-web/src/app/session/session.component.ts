@@ -275,7 +275,9 @@ export class SessionComponent implements OnInit, OnDestroy {
             if (updateFrom === null || !this.attendeeFeedback) {
               return;
             }
-            this.feedbacks[this.attendeeFeedback.pace]--;
+            if (this.attendeeFeedback.pace) {
+              this.feedbacks[this.attendeeFeedback.pace]--;
+            }
             this.feedbacks[updateFrom as Pace]++;
             this.attendeeFeedback.pace = updateFrom;
             this.pulseForm.controls.pace.setValue(this.attendeeFeedback.pace, {
