@@ -1,0 +1,8 @@
+<main class="p-4">
+  <pulsechecker-pace-background [disabled]="backgroundDisabled" [pace]="pace">
+    <pulsechecker-feedback-form
+      [submittingFeedback]="submittingFeedback"
+      (formSubmit)="submitFeedback($event)">
+    </pulsechecker-feedback-form>
+  </pulsechecker-pace-background>
+</main>

@@ -1,0 +1,10 @@
+<div class="min-h-screen flex flex-col bg-gradient-to-br pace-bg"
+ [ngClass]="{
+  'from-green-400 via-green-600 to-green-900': !disabled && pace === 'good',
+  'from-yellow-400 via-yellow-600 to-yellow-900': !disabled && pace === 'slow',
+  'from-red-400 via-red-600 to-red-900': !disabled && pace === 'fast',
+  'from-slate-400 via-slate-600 to-slate-900': !disabled && !pace,
+  'text-slate-900 text-dark': disabled
+ }">
+  <ng-content></ng-content>
+</div>

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PulseMeterComponent } from '../components/pulse-meter/pulse-meter.component';
 import { EmojiBarComponent } from '../components/emoji-bar/emoji-bar.component';
@@ -17,7 +17,7 @@ import {
 import { ReactionsService } from '../services/reactions.service';
 import { Reactions } from '../interfaces/reactions.interface';
 import { Attendee, Feedback, Pace, Session } from '@prisma/client';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { FeedbackService } from '../services/feedback.service';
 import { UserService } from '../services/user.service';
 import { SupabaseService } from '../services/supabase.service';
@@ -27,6 +27,8 @@ import { LoaderComponent } from '../components/loader/loader.component';
 import { Title } from '@angular/platform-browser';
 import { Modal, initTE, Input } from 'tw-elements';
 import { WalkthroughService } from '../services/walkthrough.service';
+import { FeedbackFormComponent } from '../components/feedback-form/feedback-form.component';
+import { PaceBackgroundComponent } from '../components/pace-background/pace-background.component';
 
 @Component({
   selector: 'pulsechecker-session',
@@ -37,6 +39,8 @@ import { WalkthroughService } from '../services/walkthrough.service';
     EmojiBarComponent,
     ReactiveFormsModule,
     LoaderComponent,
+    FeedbackFormComponent,
+    PaceBackgroundComponent,
     RouterModule,
   ],
   templateUrl: './session.component.html',
@@ -61,10 +65,6 @@ export class SessionComponent implements OnInit, OnDestroy {
       emoji: '',
       count: 0,
     });
-  pulseForm = new FormGroup({
-    pace: new FormControl<Pace | null>(null, { nonNullable: true, validators: [Validators.required] }),
-    comment: new FormControl('')
-  });
   componentAlive = true;
   attendee!: Attendee | null;
   realtimeChannel!: RealtimeChannel;
@@ -72,6 +72,12 @@ export class SessionComponent implements OnInit, OnDestroy {
   sendingFeedback = true;
   attendeeFeedback: Feedback | null = null;
   submittingFeedback = false;
+  @ViewChild(FeedbackFormComponent)
+  feedbackForm!: FeedbackFormComponent;
+
+  get pace() {
+    return this.feedbackForm ? this.feedbackForm.pulseForm.controls.pace.value : null;
+  }
 
   feedbackCommentTriggerClick() {
     if (this.walkthroughService.isActive()) {
@@ -114,9 +120,9 @@ export class SessionComponent implements OnInit, OnDestroy {
           this.titleService.setTitle(this.session.name);
           return forkJoin([
             this.feedbackService.getAttendeeFeedback(this.session.id, (this.attendee as Attendee).id),
-            this.feedbackService.getSessionFeedbackCounts(this.session.id)
+            this.feedbackService.getSessionFeedbackCounts(this.session.id),
           ]);
-        })
+        }),
       )
       .subscribe(([attendeeFeedback, feedbacks]: [Feedback, SessionFeedbackWithCount]) => {
         console.log({feedbacks})
@@ -126,11 +132,11 @@ export class SessionComponent implements OnInit, OnDestroy {
         };
         
         if (attendeeFeedback) {
-          this.pulseForm.controls.pace.setValue(attendeeFeedback.pace);
-          this.pulseForm.controls.comment.setValue(attendeeFeedback.comment);
+          this.feedbackForm.pulseForm.controls.pace.setValue(attendeeFeedback.pace);
+          this.feedbackForm.pulseForm.controls.comment.setValue(attendeeFeedback.comment);
           this.attendeeFeedback = attendeeFeedback;
         } else {
-          this.pulseForm.controls.pace.setValue(null);
+          this.feedbackForm.pulseForm.controls.pace.setValue(null);
           this.onPaceButtonClick(Pace.good);
           this.attendeeFeedback = {
             pace: null as unknown as Pace,
@@ -175,9 +181,11 @@ export class SessionComponent implements OnInit, OnDestroy {
     .subscribe((_) => {})
   }
 
-  submitFeedback(event: SubmitEvent) {
-    event.preventDefault();
-    const pace = this.pulseForm.controls.pace.value;
+  submitFeedback(form: Partial<{
+    pace: Pace | null,
+    comment: string | null
+  }>) {
+    const { pace, comment } = form;
     if (!pace || !this.attendeeFeedback) {
       return;
     }
@@ -186,12 +194,12 @@ export class SessionComponent implements OnInit, OnDestroy {
       updateFrom = this.attendeeFeedback.pace;
       this.feedbacks[this.attendeeFeedback.pace]--;
     } else if (this.attendeeFeedback.pace === pace) {
-      this.pulseForm.controls.pace.enable({
+      this.feedbackForm.pulseForm.controls.pace.enable({
         emitEvent: false
       });
     }
     this.attendeeFeedback.pace = pace;
-    this.attendeeFeedback.comment = this.pulseForm.controls.comment.value;
+    this.attendeeFeedback.comment = comment || '';
     this.feedbacks[pace]++;
     this.saveFeedback(this.attendeeFeedback, updateFrom);
   }
@@ -217,7 +225,7 @@ export class SessionComponent implements OnInit, OnDestroy {
       updateFrom = this.attendeeFeedback.pace;
       this.feedbacks[this.attendeeFeedback.pace]--;
     } else if (this.attendeeFeedback.pace === pace) {
-      this.pulseForm.controls.pace.enable({
+      this.feedbackForm.pulseForm.controls.pace.enable({
         emitEvent: false
       });
       return;
@@ -280,15 +288,15 @@ export class SessionComponent implements OnInit, OnDestroy {
             }
             this.feedbacks[updateFrom as Pace]++;
             this.attendeeFeedback.pace = updateFrom;
-            this.pulseForm.controls.pace.setValue(this.attendeeFeedback.pace, {
+            this.feedbackForm.pulseForm.controls.pace.setValue(this.attendeeFeedback.pace, {
               emitEvent: false
             })
-            this.pulseForm.controls.pace.enable({
+            this.feedbackForm.pulseForm.controls.pace.enable({
               emitEvent: false
             });
         }, complete: () => {
           this.submittingFeedback = false;
-          this.pulseForm.controls.pace.enable({
+          this.feedbackForm.pulseForm.controls.pace.enable({
             emitEvent: false
           });
         }

@@ -1,0 +1,54 @@
+<form [formGroup]="pulseForm" class="space-y-4" (ngSubmit)="submitFeedback($event)">
+  <h2 class="text-2xl text-center">
+    Pace
+  </h2>
+  <div class="flex gap-x-8 gap-y-2 justify-center">
+    <figure class="flex flex-col gap-4">
+      <input
+        type="radio"
+        id="slowPace"
+        name="pace"
+        formControlName="pace"
+        value="slow"
+        [ngClass]="pulseForm.controls.pace.value === 'slow' ? 'ring-4 ring-yellow-300' : ''"
+        class="disabled:invisible w-16 h-16 cursor-pointer hover:opacity-70 transition-all duration-300 appearance-none bg-yellow-500 rounded-full focus:outline-none focus:ring-4 focus:ring-yellow-300"
+      >
+      <label for="slowPace" class="text-current h-max cursor-pointer">Too slow</label>
+    </figure>
+    <figure class="flex flex-col gap-4">
+      <input
+        type="radio"
+        id="goodPace"
+        name="pace"  
+        formControlName="pace"
+        value="good"
+        [ngClass]="pulseForm.controls.pace.value === 'good' ? 'ring-4 ring-green-300' : ''"
+        class="disabled:invisible w-16 h-16 cursor-pointer hover:opacity-70 transition-all duration-300 appearance-none bg-green-500 rounded-full focus:outline-none focus:ring-4 focus:ring-green-300"
+      >
+      <label for="goodPace" class="text-current h-max cursor-pointer">Good pace</label>
+    </figure>
+    <figure class="flex flex-col gap-4">
+      <input
+        type="radio"
+        id="fastPace"
+        name="pace"
+        formControlName="pace"
+        value="fast"
+        [ngClass]="pulseForm.controls.pace.value === 'fast' ? 'enabled:ring-4 enabled:ring-red-300' : ''"
+        class="disabled:invisible w-16 h-16 cursor-pointer enabled:hover:opacity-70 transition-all duration-300 appearance-none bg-red-500 rounded-full enabled:focus:outline-none enabled:focus:ring-4 enabled:focus:ring-red-300"
+      >
+      <label for="fastPace" class="text-current h-max cursor-pointer">Too fast</label>
+    </figure>
+  </div>
+  <textarea
+    formControlName="comment"
+    class="!text-slate-900 !placeholder:text-slate-900 peer block min-h-[auto] w-full rounded border-0 bg-white px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 motion-reduce:transition-none"
+    id="exampleFormControlTextarea1"
+    rows="3"
+    placeholder="Comments">
+  </textarea>
+  <button [disabled]="pulseForm.invalid || submittingFeedback" type="submit" class="w-full disabled:bg-slate-400 disabled:opacity-50 disabled:cursor-not-allowed bg-purple-700 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded">
+    <pulsechecker-loader *ngIf="submittingFeedback" [size]="24" color="white"></pulsechecker-loader>
+    <span *ngIf="!submittingFeedback">Submit</span>
+  </button>
+</form>

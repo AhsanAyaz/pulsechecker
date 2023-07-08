@@ -1,10 +1,4 @@
-<div class="min-h-screen flex flex-col bg-gradient-to-br"
- [ngClass]="{
-  'from-green-400 via-green-600 to-green-900': pulseForm.controls.pace.value === 'good',
-  'from-yellow-400 via-yellow-600 to-yellow-900': pulseForm.controls.pace.value === 'slow',
-  'from-red-400 via-red-600 to-red-900': pulseForm.controls.pace.value === 'fast',
-  'from-slate-400 via-slate-600 to-slate-900': !pulseForm.controls.pace.value
- }">
+<pulsechecker-pace-background [pace]="pace" class="text-white">
   <header class="h-16 bg-white px-3 py-2 flex items-center justify-between">
     <a routerLink="/join">Pulse Checker</a>
     <span class="flex items-center gap-4">
@@ -19,65 +13,16 @@
       <div class="h-64" *ngIf="session?.showRealtimePulse" [style.visibility]="isLoadingData ? 'hidden' : 'visible'">
         <pulsechecker-pulse-meter [pulseData]="feedbacks"></pulsechecker-pulse-meter>
       </div>
-      <div class="flex justify-center items-center flex-col gap-4">
-        <form [formGroup]="pulseForm" class="space-y-4" (ngSubmit)="submitFeedback($event)">
-          <div class="flex gap-x-8 gap-y-2 justify-center">
-            <figure class="flex flex-col gap-4">
-              <input
-                type="radio"
-                id="slowPace"
-                name="pace"
-                formControlName="pace"
-                value="slow"
-                [ngClass]="pulseForm.controls.pace.value === 'slow' ? 'ring-4 ring-yellow-300' : ''"
-                class="disabled:invisible w-16 h-16 cursor-pointer hover:opacity-70 transition-all duration-300 appearance-none bg-yellow-500 rounded-full focus:outline-none focus:ring-4 focus:ring-yellow-300"
-              >
-              <label for="slowPace" class="text-white h-max cursor-pointer">Too slow</label>
-            </figure>
-            <figure class="flex flex-col gap-4">
-              <input
-                type="radio"
-                id="goodPace"
-                name="pace"  
-                formControlName="pace"
-                value="good"
-                [ngClass]="pulseForm.controls.pace.value === 'good' ? 'ring-4 ring-green-300' : ''"
-                class="disabled:invisible w-16 h-16 cursor-pointer hover:opacity-70 transition-all duration-300 appearance-none bg-green-500 rounded-full focus:outline-none focus:ring-4 focus:ring-green-300"
-              >
-              <label for="goodPace" class="text-white h-max cursor-pointer">Good pace</label>
-            </figure>
-            <figure class="flex flex-col gap-4">
-              <input
-                type="radio"
-                id="fastPace"
-                name="pace"
-                formControlName="pace"
-                value="fast"
-                [ngClass]="pulseForm.controls.pace.value === 'fast' ? 'enabled:ring-4 enabled:ring-red-300' : ''"
-                class="disabled:invisible w-16 h-16 cursor-pointer enabled:hover:opacity-70 transition-all duration-300 appearance-none bg-red-500 rounded-full enabled:focus:outline-none enabled:focus:ring-4 enabled:focus:ring-red-300"
-              >
-              <label for="fastPace" class="text-white h-max cursor-pointer">Too fast</label>
-            </figure>
-          </div>
-          <textarea
-            formControlName="comment"
-            class="!text-slate-900 !placeholder:text-slate-900 peer block min-h-[auto] w-full rounded border-0 bg-white px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 motion-reduce:transition-none"
-            id="exampleFormControlTextarea1"
-            rows="3"
-            placeholder="Comments">
-          </textarea>
-          <button [disabled]="pulseForm.invalid || submittingFeedback" type="submit" class="w-full disabled:bg-slate-400 disabled:opacity-50 disabled:cursor-not-allowed bg-purple-700 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded">
-            <pulsechecker-loader *ngIf="submittingFeedback" [size]="24" color="white"></pulsechecker-loader>
-            <span *ngIf="!submittingFeedback">Submit</span>
-          </button>
-        </form>
-      </div>
     </ng-container>
+    <div class="flex justify-center items-center flex-col gap-4">
+      <pulsechecker-feedback-form [submittingFeedback]="submittingFeedback" (formSubmit)="submitFeedback($event)"></pulsechecker-feedback-form>
+    </div>
   </div>
   <div class="bg-white p-2">
     <pulsechecker-emoji-bar (emojiSelected)="onEmojiTapped($event)"></pulsechecker-emoji-bar>
   </div>
-</div>
+</pulsechecker-pace-background>
+
 <ng-template #loader>
   <div class="w-full h-full flex justify-center items-center">
     <pulsechecker-loader [size]="64" color="white"></pulsechecker-loader>

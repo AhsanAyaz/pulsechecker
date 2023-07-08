@@ -33,6 +33,9 @@ export const appRoutes: Route[] = [{
     loadComponent: () => import('./dashboard/session-details/session-details.component').then(m => m.SessionDetailsComponent)
   }]
 }, {
+  path: 'review-widget',
+  loadComponent: () => import('./review-widget/review-widget.component').then(m => m.ReviewWidgetComponent)
+}, {
   path: '**',
   loadComponent: () => import('./not-found/not-found.component').then(m => m.NotFoundComponent)
 }];
